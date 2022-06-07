@@ -1,8 +1,10 @@
-<center><img width="200" src="http://assets.stickpng.com/images/5ae21cc526c97415d3213554.png"/>
+<center><img width="150" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png"/>
 <p>
 WhatsApp API package for flutter, to send message and product information.
 </p>
 </center>
+
+
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)
 - [Installation](#installation)
   * [Configure access_token and Phone ID](#configure-access-token-and-phone-id)
