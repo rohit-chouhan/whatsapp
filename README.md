@@ -26,7 +26,7 @@ Whatsapp whatsapp = Whatsapp();
 ```dart
 whatsapp.setup(
 	access_token: "your_access_token_here",
-	phone_numner: "your_business_number_id"
+	phone_number: 10000000000000 //integer
 );
 ```
 
@@ -41,8 +41,8 @@ this method used to generate direct chat link
 **sample code:-**
 ```dart
 whatsapp.short(
-	to: "910000000000", // number with country code (without +),
-	message: "Hey", //template name
+	to: 910000000000, // number with country code (without +),
+	message: "Hey",
 	compress: true
 );
 ```
@@ -57,7 +57,7 @@ this method used to send a template message to client's whatsapp
 **sample code:-**
 ```dart
 whatsapp.messagesTemplate(
-	to: "910000000000", // number with country code (without +),
+	to: 910000000000, // number with country code (without +),
 	template_name: "hello_world" //template name
 );
 ```
@@ -73,7 +73,7 @@ this method used to send a text message to client's whatsapp
 **sample code:-**
 ```dart
 whatsapp.messagesTemplate(
-	to: "910000000000", // number with country code (without +),
+	to: 910000000000, // number with country code (without +),
 	message: "Hey, Flutter, follow me on https://example.com", //message
 	preview_url: true
 );
@@ -85,10 +85,11 @@ this method used to send a media message to client's whatsapp
 * `to` - number of client 
 * `media_type` - type of media ex. image
 * `media_id` - uploaded media id on whatsapp business
+
 **sample code:-**
 ```dart
 whatsapp.messagesMedia(
-	to: "910000000000", // number with country code (without +),
+	to: 910000000000, // number with country code (without +),
 	media_type: "image",
 	media_id: "f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68"
 );
@@ -106,8 +107,8 @@ this method used to send a location message to client's whatsapp
 
 **sample code:-**
 ```dart
-whatsapp.messagesMedia(
-	to: "910000000000", // number with country code (without +),
+whatsapp.messagesLocation(
+	to: 910000000000, // number with country code (without +),
 	longitude: "26.4866491",
 	latitude: "74.5288578",
 	name: "Pushkar",
