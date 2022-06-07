@@ -14,12 +14,12 @@ class Whatsapp {
     fromNumber = fromNumberId;
   }
 
-  /// generate link for whatsapp short link, [phone_number] is the phone number with country code without +, [message] is the text to send, [compress] is optional, if true, the link will be compressed
-  short({phone_number, message, compress}) {
+  /// generate link for whatsapp short link, [to] is the phone number with country code without +, [message] is the text to send, [compress] is optional, if true, the link will be compressed
+  short({to, message, compress}) {
     if (compress == true) {
-      return 'https://wa.me/${phone_number}?text=${message}';
+      return 'https://wa.me/${to}?text=${message}';
     } else {
-      return 'https://api.whatsapp.com/send?phone=${phone_number}&text=${message}';
+      return 'https://api.whatsapp.com/send?phone=${to}&text=${message}';
     }
   }
 

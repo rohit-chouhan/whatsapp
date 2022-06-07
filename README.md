@@ -8,6 +8,7 @@ WhatsApp API package for flutter, to send message and product information.
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)
 - [Installation](#installation)
   * [Configure access_token and Phone ID](#configure-access-token-and-phone-id)
+  * [💬 short `Direct chat link`](#---short--direct-chat-link-)
   * [💬 messagesTemplate `Send a template message`](#---messagestemplate--send-a-template-message-)
   * [💬 messagesText `Send a text message`](#---messagestext--send-a-text-message-)
   * [💬 messagesMedia `Send a media message`](#---messagesmedia--send-a-media-message-)
@@ -18,14 +19,31 @@ WhatsApp API package for flutter, to send message and product information.
 You must have WhatsApp apps in facebook developer, to use this package, please follow this link for [Guidence](https://developers.facebook.com/).
 ### Installation
 ```dart 
-import ''
-Whatsapp whatsapp = new Whatsapp();
+import 'package:whatsapp/whatsapp.dart';
+Whatsapp whatsapp = Whatsapp();
 ```
 #### Configure access_token and Phone ID
 ```dart
 whatsapp.setup(
 	access_token: "your_access_token_here",
 	phone_numner: "your_business_number_id"
+);
+```
+
+#### 💬 short `Direct chat link`
+this method used to generate direct chat link
+
+**parameter:-**
+* `to` - number of client 
+* `message` - message
+* `compress` - true / false for compress link
+
+**sample code:-**
+```dart
+whatsapp.short(
+	to: "910000000000", // number with country code (without +),
+	message: "Hey", //template name
+	compress: true
 );
 ```
 
