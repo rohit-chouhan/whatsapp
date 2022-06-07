@@ -23,10 +23,10 @@ Whatsapp whatsapp = new Whatsapp();
 ```
 #### Configure access_token and Phone ID
 ```dart
-whatsapp.setup({
+whatsapp.setup(
 	access_token: "your_access_token_here",
 	phone_numner: "your_business_number_id"
-});
+);
 ```
 
 #### 💬 messagesTemplate `Send a template message`
