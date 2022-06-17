@@ -1,6 +1,6 @@
 name: whatsapp
 description: A package for whatsapp business api, send messages, product, media, location through flutter app.
-version: 1.0.2
+version: 1.0.3
 homepage: https://rohitchouhan.com
 repository: https://github.com/rohit-chouhan/whatsapp
 
