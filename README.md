@@ -1,8 +1,14 @@
-<center><img width="150" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png"/>
+<center><img width="150" src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/>
 <p>
 WhatsApp API package for flutter, to send message and product information.
 </p>
 </center>
+
+### Platform Support
+
+| Android | iOS | MacOS | Web | Linux | Windows |
+| :-----: | :-: | :---: | :-: | :---: | :-----: |
+|   ✔️    | ✔️  |  ✔️   | ✔️  |  ✔️   |   ✔️    |
 
 
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)

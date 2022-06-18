@@ -19,3 +19,7 @@
 ## 1.0.4
 
 * example updated
+
+## 1.0.5
+
+* readme updated
