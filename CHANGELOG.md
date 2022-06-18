@@ -23,3 +23,7 @@
 ## 1.0.5
 
 * readme updated
+
+## 1.0.6
+
+* readme updated

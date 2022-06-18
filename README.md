@@ -1,8 +1,5 @@
-<center><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/>
-<p>
-WhatsApp API package for flutter, to send message and product information.
-</p>
-</center>
+<p align="center"><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/></p>
+<p align="center">WhatsApp API package for flutter, to send message and product information.</p>
 
 ### Platform Support
 
