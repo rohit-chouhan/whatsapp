@@ -11,6 +11,7 @@ WhatsApp API package for flutter, to send message and product information.
 |   ✔️    | ✔️  |  ✔️   | ✔️  |  ✔️   |   ✔️    |
 
 
+
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)
 - [Installation](#installation)
   * [Configure accessToken and Phone ID](#configure-accessToken-and-phone-id)
