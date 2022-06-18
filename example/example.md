@@ -22,8 +22,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     whatsapp.setup(
-      access_token: 'XXXXXXXXXXXXXXXXXXXXXXX',
-      fromNumberId: XXXXXXXXXXXXXX,
+      access_token: 'cXnwup67hgj3QdvpXXXXX==',
+      fromNumberId: 1800000000000, //Integer
     );
   }
 
@@ -40,8 +40,8 @@ class _MyAppState extends State<MyApp> {
                 child: const Text('Send Message'),
                 onPressed: () async {
                   await whatsapp.messagesTemplate(
-                    to: 91XXXXXXXXXX,
-                    template_name: "hello_world
+                    to: 91000000000, //integer
+                    template_name: "hello_world"
                   );
                 },
               ),

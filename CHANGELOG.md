@@ -15,3 +15,7 @@
 
 * properties updated
 * bug fixed
+
+## 1.0.4
+
+* example updated
