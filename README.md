@@ -1,4 +1,4 @@
-<center><img width="150" src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/>
+<center><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/>
 <p>
 WhatsApp API package for flutter, to send message and product information.
 </p>
