@@ -1,29 +1,26 @@
-## 1.0.0
+## 1.0.7
 
-* intial release
-
-
-## 1.0.1
+* Bugfixed
+* Documentation updated
+## 1.0.6
 
 * readme updated
+## 1.0.5
 
-## 1.0.2
+* readme updated
+## 1.0.4
 
-* bug fixed
-
+* example updated
 ## 1.0.3
 
 * properties updated
 * bug fixed
+## 1.0.2
 
-## 1.0.4
-
-* example updated
-
-## 1.0.5
+* bug fixed
+## 1.0.1
 
 * readme updated
+## 1.0.0
 
-## 1.0.6
-
-* readme updated
+* intial release
