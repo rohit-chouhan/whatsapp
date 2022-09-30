@@ -1,125 +1,110 @@
 <p align="center"><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/></p>
-<p align="center">WhatsApp API package for flutter, to send message and product information.</p>
 
-### Platform Support
+[![rohit-chouhan](https://user-images.githubusercontent.com/82075108/182797964-a92e0c59-b9ef-432d-92af-63b6475a4b1c.svg)](https://www.github.com/rohit-chouhan)
+_[![sponsor](https://user-images.githubusercontent.com/82075108/182797969-11208ddc-b84c-4618-8534-18388d24ac18.svg)](https://github.com/sponsors/rohit-chouhan)_
 
-| Android | iOS | MacOS | Web | Linux | Windows |
-| :-----: | :-: | :---: | :-: | :---: | :-----: |
-|   ✔️    | ✔️  |  ✔️   | ✔️  |  ✔️   |   ✔️    |
-
-
-
+WhatsApp API package for flutter, to send message and product information.
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)
-- [Installation](#installation)
-  * [Configure accessToken and Phone ID](#configure-accessToken-and-phone-id)
-  * [💬 short `Direct chat link`](#---short--direct-chat-link-)
-  * [💬 messagesTemplate `Send a template message`](#---messagestemplate--send-a-template-message-)
-  * [💬 messagesText `Send a text message`](#---messagestext--send-a-text-message-)
-  * [💬 messagesMedia `Send a media message`](#---messagesmedia--send-a-media-message-)
-  * [💬 messagesLocation `Send a location message`](#---messageslocation--send-a-location-message-)
-  * [More Coming soon]
+	- [💬 Short link](#💬-short-link)
+	- [💬 Send template](#💬-send-template)
+	- [💬 Send text message](#💬-send-text-message)
+	- [💬 Send media files](#💬-send-media-files)
+	- [💬 Send location details](#💬-send-location-details)
 
 ### WhatsApp Business Configuration
-You must have WhatsApp apps in facebook developer, to use this package, please follow this link for [Guidence](https://developers.facebook.com/).
-### Installation
+You must have WhatsApp apps in facebook developer, to use this package, please follow this [Guidelines](https://developers.facebook.com/).
+
 ```dart 
-import 'package:whatsapp/whatsapp.dart';
-Whatsapp whatsapp = Whatsapp();
+WhatsApp whatsapp = WhatsApp();
 ```
-#### Configure accessToken and Phone ID
+Configure `accessToken` and `fromNumberId`.
+
 ```dart
 whatsapp.setup(
 	accessToken: "your_access_token_here",
-	fromNumberId: 10000000000000 //integer
+	fromNumberId: 10000000000000
 );
 ```
 
-#### 💬 short `Direct chat link`
-this method used to generate direct chat link
+#### 💬 Short link
+Generate the short link of the WhatsApp.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `message` - the message to be sent.
+- `compress` - pass `true` to compress the link.
 
-**parameter:-**
-* `to` - number of client 
-* `message` - message
-* `compress` - true / false for compress link
-
-**sample code:-**
 ```dart
 whatsapp.short(
-	to: 910000000000, // number with country code (without +),
+	to: 910000000000,
 	message: "Hey",
 	compress: true
 );
-
 //return : https://wa.me/910000000000?text=Hy
 ```
 
-#### 💬 messagesTemplate `Send a template message`
-this method used to send a template message to client's whatsapp
+#### 💬 Send template
+Send the template to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `templateName` - the template name.
 
-**parameter:-**
-* `to` - number of client 
-* `templateName` - name of a template
-
-**sample code:-**
 ```dart
 whatsapp.messagesTemplate(
-	to: 910000000000, // number with country code (without +),
-	templateName: "hello_world" //template name
+	to: 910000000000, 
+	templateName: "hello_world"
 );
 ```
 
-#### 💬 messagesText `Send a text message`
-this method used to send a text message to client's whatsapp
+#### 💬 Send text message
+Send the text message to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `message` - the message to be sent.
+- `previewUrl` - is used to preview the URL in the chat window.
 
-**parameter:-**
-* `to` - number of client 
-* `message` - message your want to send
-* `previewUrl` - true and false for preview url in message
-
-**sample code:-**
 ```dart
 whatsapp.messagesTemplate(
-	to: 910000000000, // number with country code (without +),
-	message: "Hey, Flutter, follow me on https://example.com", //message
+	to: 910000000000,
+	message: "Hey, Flutter, follow me on https://example.com",
 	previewUrl: true
 );
 ```
-#### 💬 messagesMedia `Send a media message`
-this method used to send a media message to client's whatsapp
-
-**parameter:-**
-* `to` - number of client 
-* `mediaType` - type of media ex. image
-* `mediaId` - uploaded media id on whatsapp business
-
-**sample code:-**
+#### 💬 Send media files
+Send the media files to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `mediaType` - the type of media such as image, document, audio, image, video, or sticker.
+- `mediaId` - Use this edge to retrieve and delete media.
+  
 ```dart
 whatsapp.messagesMedia(
-	to: 910000000000, // number with country code (without +),
+	to: 910000000000,
 	mediaType: "image",
 	mediaId: "f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68"
 );
 ```
 
-#### 💬 messagesLocation `Send a location message`
-this method used to send a location message to client's whatsapp
+#### 💬 Send location details
+Send the location to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `longitude` - the longitude of the location.
+- `latitude` - the latitude of the location.
+- `name` - the name of the location.
+- `address` - the full address of the location.
 
-**parameter:-**
-* `to` - number of client 
-* `longitude` -longitude string
-* `latitude` - latitude string
-* `name` - name of location
-* `address` - full address of location
-
-**sample code:-**
 ```dart
 whatsapp.messagesLocation(
-	to: 910000000000, // number with country code (without +),
+	to: 910000000000,
 	longitude: "26.4866491",
 	latitude: "74.5288578",
 	name: "Pushkar",
 	address: "Rajasthan, India"
 );
 ```
+# Contributors
 
-#### Feel free to contribute ❤️
+[![chouhan-rahul](https://user-images.githubusercontent.com/82075108/193220114-cd307ff4-9176-448c-9be6-e8bdee70206d.svg)
+](https://github.com/chouhan-rahul)
+# Report bugs or issues
+
+You are welcome to open a _[ticket](https://github.com/rohit-chouhan/whatsapp/issues)_ on github if any problems arise. New ideas are always welcome.
+
+# Copyright and License
+
+> Copyright © 2022 **[Rohit Chouhan](https://rohitchouhan.com)**. Licensed under the _[MIT LICENSE](https://github.com/rohit-chouhan/whatsapp/blob/main/LICENSE)_.
