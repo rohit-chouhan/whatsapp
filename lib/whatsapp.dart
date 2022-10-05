@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 class WhatsApp {
   String? _accessToken;
   int? _fromNumberId;
+  Map<String, String>? _headers;
 
   /// Configure the WhatsApp API with access token and from number id.
   /// [accessToken] is the access token of the WhatsApp API.
@@ -14,6 +15,10 @@ class WhatsApp {
   setup({accessToken, int? fromNumberId}) {
     _accessToken = accessToken;
     _fromNumberId = fromNumberId;
+    _headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $_accessToken"
+    };
   }
 
   /// Generate the short link of the WhatsApp.
@@ -32,32 +37,27 @@ class WhatsApp {
   /// Send the template to the client.
   /// [to] is the phone number with country code but without the plus (+) sign.
   /// [templateName] is the template name.
-  Future<bool> messagesTemplate({int? to, String? templateName}) async {
-    var url = 'https://graph.facebook.com/v13.0/$_fromNumberId/messages';
+  Future messagesTemplate({int? to, String? templateName}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
     Uri uri = Uri.parse(url);
 
     Map data = {
       "messaging_product": "whatsapp",
-      "to": "$to",
+      "to": to,
       "type": "template",
       "template": {
-        "name": "$templateName",
+        "name": templateName,
         "language": {"code": "en_US"}
       }
     };
 
     var body = json.encode(data);
 
-    var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "_accessToken": "Bearer $_accessToken"
-        },
-        body: body);
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return false;
+    var response = await http.post(uri, headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
     }
   }
 
@@ -65,34 +65,29 @@ class WhatsApp {
   /// [to] is the phone number with country code but without the plus (+) sign.
   /// [message] is the message to be sent.
   /// [previewUrl] is used to preview the URL in the chat window.
-  Future<bool> messagesText({
+  Future messagesText({
     int? to,
     String? message,
     bool? previewUrl,
   }) async {
-    var url = 'https://graph.facebook.com/v13.0/$_fromNumberId/messages';
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
     Uri uri = Uri.parse(url);
 
     Map data = {
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
-      "to": "$to",
+      "to": to,
       "type": "text",
-      "text": {"previewUrl": previewUrl, "body": "$message"}
+      "text": {"preview_url": previewUrl, "body": message}
     };
 
     var body = json.encode(data);
 
-    var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "_accessToken": "Bearer $_accessToken"
-        },
-        body: body);
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return false;
+    var response = await http.post(uri, headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
     }
   }
 
@@ -100,29 +95,24 @@ class WhatsApp {
   /// [to] is the phone number with country code but without the plus (+) sign.
   /// [mediaType] is the type of media such as image, document, audio, image, video, or sticker.
   /// [mediaId] use this edge to retrieve and delete media.
-  Future<bool> messagesMedia({to, mediaType, mediaId}) async {
-    var url = 'https://graph.facebook.com/v13.0/$_fromNumberId/messages';
+  Future messagesMedia({to, mediaType, mediaId}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
     Uri uri = Uri.parse(url);
     Map data = {
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
-      "to": "$to",
-      "type": "$mediaType",
-      "image": {"id": "$mediaId"}
+      "to": to,
+      "type": mediaType,
+      "$mediaType": {"id": mediaId}
     };
 
     var body = json.encode(data);
 
-    var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "_accessToken": "Bearer $_accessToken"
-        },
-        body: body);
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return false;
+    var response = await http.post(uri, headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
     }
   }
 
@@ -132,14 +122,13 @@ class WhatsApp {
   /// [latitude] is the latitude of the location.
   /// [name] is the name of the location.
   /// [address] is the full address of the location.
-  Future<bool> messagesLocation(
-      {to, longitude, latitude, name, address}) async {
-    var url = 'https://graph.facebook.com/v13.0/$_fromNumberId/messages';
+  Future messagesLocation({to, longitude, latitude, name, address}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
     Uri uri = Uri.parse(url);
 
     Map data = {
       "messaging_product": "whatsapp",
-      "to": "$to",
+      "to": to,
       "type": "location",
       "location": {
         "longitude": longitude,
@@ -151,16 +140,116 @@ class WhatsApp {
 
     var body = json.encode(data);
 
-    var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "_accessToken": "Bearer $_accessToken"
-        },
-        body: body);
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return false;
+    var response = await http.post(uri, headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Send image messages to the client.
+  /// [to] is the phone number with country code but without the plus (+) sign.
+  /// [imageLink] is the image to be sent.
+  Future messagesImageByLink({to, imageLink}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "recipient_type": "individual",
+      "to": to,
+      "type": "image",
+      "image": {"link": imageLink}
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  ///Send video messages to the client.
+  ///[to] is the phone number with country code but without the plus (+) sign.
+  /// [videoLink] is the video to be sent.
+  /// [caption] is the caption of the video.
+  Future messagesVideoByLink({to, videoLink, caption}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "recipient_type": "individual",
+      "to": to,
+      "type": "video",
+      "video": {"link": videoLink, "caption": caption}
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Emoji React to Any Message
+  /// [to] is the phone number with country code but without the plus (+) sign.
+  /// [messageId] is the message id.
+  /// [emoji] is the emoji to be sent.
+  Future messagesReaction({to, messageId, emoji}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "recipient_type": "individual",
+      "to": to,
+      "type": "reaction",
+      "reaction": {"message_id": messageId, "emoji": emoji}
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Reply to a message
+  /// [to] is the phone number with country code but without the plus (+) sign.
+  /// [messageId] is the message id.
+  /// [message] is the message to be sent.
+  /// [previewUrl] is used to preview the URL in the chat window.
+  Future messagesReply({to, messageId, previewUrl, message}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "recipient_type": "individual",
+      "to": to,
+      "context": {"message_id": messageId},
+      "type": "text",
+      "text": {"preview_url": previewUrl, "body": message}
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
     }
   }
 }
