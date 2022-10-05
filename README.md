@@ -10,6 +10,10 @@ WhatsApp API package for flutter, to send message and product information.
 	- [💬 Send text message](#💬-send-text-message)
 	- [💬 Send media files](#💬-send-media-files)
 	- [💬 Send location details](#💬-send-location-details)
+	- [💬 Send image by link](#💬-send-image-by-link)
+	- [💬 Send video by link](#💬-send-video-by-link)
+	- [💬 Send reaction on message](#💬-send-reaction-on-message)
+	- [💬 Send reply on message](#💬-send-reply-on-message)
 
 ### WhatsApp Business Configuration
 You must have WhatsApp apps in facebook developer, to use this package, please follow this [Guidelines](https://developers.facebook.com/).
@@ -95,6 +99,58 @@ whatsapp.messagesLocation(
 	latitude: "74.5288578",
 	name: "Pushkar",
 	address: "Rajasthan, India"
+);
+```
+#### 💬 Send image by link
+Send the location to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `imageLink` - the image to be sent.
+
+```dart
+whatsapp.messagesImageByLink(
+	to: 910000000000,
+	imageLink: "https://example.com/image.png",
+);
+```
+#### 💬 Send video by link
+Send the location to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `videoLink` - the video to be sent.
+- `caption` - the caption of the video.
+
+```dart
+whatsapp.messagesVideoByLink(
+	to: 910000000000,
+	videoLink: "https://example.com/video.mp4",
+	caption: "demo video"
+);
+```
+#### 💬 Send reaction on message
+Send the location to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `messageId` - the message id.
+- `emoji` - the emoji to be sent.
+
+```dart
+whatsapp.messagesReaction(
+	to: 910000000000,
+	messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
+	emoji: "👍"
+);
+```
+#### 💬 Send reply on message
+Send the location to the client.
+- `to` - the phone number with country code but without the plus (+) sign.
+- `messageId` - the message id.
+- `message` - the message to be sent.
+- `previewUrl` - used to preview the URL in the chat window.
+
+```dart
+whatsapp.messagesReply(
+	to: 910000000000,
+	messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
+	message: "Hey, Flutter!",
+	previewUrl: true
 );
 ```
 # Contributors
