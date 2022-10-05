@@ -2,7 +2,12 @@
 
 * Bugfixed
 * Documentation updated
-## 1.0.6
+* Preview url fixed
+* New services added
+  * Send image
+  * Send video
+  * Reply to message
+  * React to message
 
 * readme updated
 ## 1.0.5
