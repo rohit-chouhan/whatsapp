@@ -1,3 +1,10 @@
+## 1.0.9
+
+* other bugs fixed
+* New services
+  * Register a phone number
+  * De-register a phone number
+
 ## 1.0.8
 
 * Mentioned services removed and implemented to messagesMediaByLink()
