@@ -1,4 +1,4 @@
-## 1.0.9
+## 1.0.9 + 1.1.0
 
 * other bugs fixed
 * New services
