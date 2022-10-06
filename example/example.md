@@ -83,22 +83,14 @@ class _HomeState extends State<Home> {
           ),
           TextButton(
             onPressed: () async {
-              await whatsapp.messagesImageByLink(
-                to: phoneNumber,
-                imageLink: 'https://example.com/image.png',
+              await whatsapp.messagesMediaByLink(
+                to: 910000000000,
+                mediaType:"video",
+                mediaLink: "https://example.com/flutter.mp4",
+                caption:"My Flutter Video"
               );
             },
-            child: const Text("Send Image By Link"),
-          ),
-          TextButton(
-            onPressed: () async {
-              await whatsapp.messagesVideoByLink(
-                to: phoneNumber,
-                caption: 'demo video',
-                videoLink: 'https://example.com/video.mp4',
-              );
-            },
-            child: const Text("Send Video By Link"),
+            child: const Text("Send Media By Link"),
           ),
           TextButton(
             onPressed: () async {
@@ -120,6 +112,29 @@ class _HomeState extends State<Home> {
               );
             },
             child: const Text("Send Reply on Message"),
+          ),
+           TextButton(
+            onPressed: () async {
+              await whatsapp.messagesReplyMedia(
+                to: 910000000000,
+                messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
+                mediaType: "image",
+                mediaId: "1000000000000000"
+              );
+            },
+            child: const Text("Send Reply with Media"),
+          ),
+           TextButton(
+            onPressed: () async {
+              await whatsapp.messagesReplyMediaUrl(
+                to: 910000000000,
+                messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
+                mediaType: "video",
+                medialInk: "http://example.com/video.mp4",
+                caption: "My Flutter Video"
+              );
+            },
+            child: const Text("Send Reply with Media (Url)"),
           ),
         ],
       ),
