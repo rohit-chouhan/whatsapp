@@ -18,6 +18,8 @@ WhatsApp API package for flutter, to send message and product information.
   - [💬 Send reply with media url](#---send-reply-with-media-url)
   - [📞 Register a number](#---register-a-number)
   - [📞 Deegister a number](#---deregister-a-number)
+  - [🆔 Get Shared WhatsApp Business Account Id](#---get-shared-whatsapp-business-account-id)
+  - [🆔 Get Shared WhatsApp Business Account List](#---get-shared-whatsapp-business-account-list)
 
 ### WhatsApp Business Configuration
 
@@ -230,6 +232,30 @@ Deregister a phone number
 ```dart
 whatsapp.deregisterNumber(
 	pin:"123456"
+);
+```
+
+#### 🆔 Get Shared WhatsApp Business Account Id
+
+Get Shared WhatsApp Business Account Id
+
+- `inputToken` - token generated after embedding the signup flow
+
+```dart
+whatsapp.getWhatsAppBusinessAccounts(
+	inputToken:"EAAFl...."
+);
+```
+
+#### 🆔 Get Shared WhatsApp Business Account List
+
+Get Shared WhatsApp Business Account List
+
+- `accountId` - Business manager account Id
+
+```dart
+whatsapp.getWhatsAppBusinessAccountsList(
+	accountId: 805021500648488
 );
 ```
 
