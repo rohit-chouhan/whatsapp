@@ -1,3 +1,10 @@
+## 1.1.1
+
+* New services
+  * Embed the Signup Flow
+    * Get Id of Shared WABAs
+    * Get List of Shared WABAs
+
 ## 1.0.9 + 1.1.0
 
 * other bugs fixed
