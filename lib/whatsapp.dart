@@ -93,7 +93,7 @@ class WhatsApp {
 
   /// Send the media files to the client.
   /// [to] is the phone number with country code but without the plus (+) sign.
-  /// [mediaType] is the type of media such as image, document, audio, image, video, or sticker.
+  /// [mediaType] is the type of media such as image, document, sticker, audio or video
   /// [mediaId] use this edge to retrieve and delete media.
   Future messagesMedia({to, mediaType, mediaId}) async {
     var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
@@ -148,44 +148,20 @@ class WhatsApp {
     }
   }
 
-  /// Send image messages to the client.
+  /// Send media messages to the client.
   /// [to] is the phone number with country code but without the plus (+) sign.
-  /// [imageLink] is the image to be sent.
-  Future messagesImageByLink({to, imageLink}) async {
+  /// [mediaType] is type of media such as image, document, sticker, audio or video
+  /// [mediaLink] is media to be sent.
+  /// [caption] is caption of media
+  Future messagesMediaByLink({to, mediaType, mediaLink, caption}) async {
     var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
 
     Map data = {
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
       "to": to,
-      "type": "image",
-      "image": {"link": imageLink}
-    };
-
-    var body = json.encode(data);
-
-    var response =
-        await http.post(Uri.parse(url), headers: _headers, body: body);
-    try {
-      return json.decode(response.body);
-    } catch (e) {
-      return response.body;
-    }
-  }
-
-  ///Send video messages to the client.
-  ///[to] is the phone number with country code but without the plus (+) sign.
-  /// [videoLink] is the video to be sent.
-  /// [caption] is the caption of the video.
-  Future messagesVideoByLink({to, videoLink, caption}) async {
-    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
-
-    Map data = {
-      "messaging_product": "whatsapp",
-      "recipient_type": "individual",
-      "to": to,
-      "type": "video",
-      "video": {"link": videoLink, "caption": caption}
+      "type": mediaType,
+      "$mediaType": {"caption": caption, "link": mediaLink}
     };
 
     var body = json.encode(data);
@@ -240,6 +216,64 @@ class WhatsApp {
       "context": {"message_id": messageId},
       "type": "text",
       "text": {"preview_url": previewUrl, "body": message}
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Reply to a media by ID
+  /// [to] is the phone number with country code but without the plus (+) sign.
+  /// [messageId] is the message id.
+  /// [mediaType] is type of media such as image, document, sticker, audio or video
+  /// [mediaId] is id of media to be replay.
+  Future messagesReplyMedia({to, messageId, mediaType, mediaId}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "recipient_type": "individual",
+      "to": to,
+      "context": {"message_id": messageId},
+      "type": mediaType,
+      "$mediaType": {"id": mediaId}
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  
+  /// Reply to a media by URL
+  /// [to] is the phone number with country code but without the plus (+) sign.
+  /// [messageId] is the message id.
+  /// [mediaType] is type of media such as image, document, sticker, audio or video
+  /// [mediaLink] is link of media to be sent.
+  /// [caption] is caption of media to be sent.
+  Future messagesReplyMediaUrl({to, messageId, mediaType, mediaLink, caption}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "recipient_type": "individual",
+      "to": to,
+      "context": {"message_id": messageId},
+      "type": mediaType,
+      "$mediaType": {"link": mediaLink, "caption": caption}
     };
 
     var body = json.encode(data);
