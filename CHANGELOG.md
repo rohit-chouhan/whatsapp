@@ -1,5 +1,15 @@
+## 1.0.8
+
+* Mentioned services removed and implemented to messagesMediaByLink()
+  * ~~messagesImageByLink~~
+  * ~~messagesVideoByLink~~
+* New services
+  * Replay by Media
+  * Replay by Media (url)
+
 ## 1.0.7
 
+* WhatsApp Business API updated from v13.0 to v14.0
 * Bugfixed
 * Documentation updated
 * Preview url fixed
