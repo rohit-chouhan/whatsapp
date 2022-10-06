@@ -216,7 +216,7 @@ Register a phone number
 - `pin` is 6-digit pin for Register number.
 
 ```dart
-whatsapp.deregisterNumber(
+whatsapp.registerNumber(
 	pin:"123456"
 );
 ```
