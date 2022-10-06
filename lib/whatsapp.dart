@@ -322,4 +322,33 @@ class WhatsApp {
       return response.body;
     }
   }
+
+  /// Get Shared WhatsApp Business Account Id
+  /// [inputToken] is token generated after embedding the signup flow
+  Future getWhatsAppBusinessAccounts({inputToken}) async {
+    var url =
+        'https://graph.facebook.com/v14.0/debug_token?input_token=$inputToken';
+
+    var response = await http.get(Uri.parse(url), headers: _headers);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Get Shared WhatsApp Business Accounts Lists (WABAs)
+  /// [accountId] is Business manager account Id
+  Future getWhatsAppBusinessAccountsList({accountId}) async {
+    var parseAccountId = accountId.toString();
+    var url =
+        'https://graph.facebook.com/v14.0/$parseAccountId/client_whatsapp_business_accounts';
+
+    var response = await http.get(Uri.parse(url), headers: _headers);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
 }
