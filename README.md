@@ -4,24 +4,29 @@
 _[![sponsor](https://user-images.githubusercontent.com/82075108/182797969-11208ddc-b84c-4618-8534-18388d24ac18.svg)](https://github.com/sponsors/rohit-chouhan)_
 
 WhatsApp API package for flutter, to send message and product information.
+
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)
-	- [💬 Short link](#💬-short-link)
-	- [💬 Send template](#💬-send-template)
-	- [💬 Send text message](#💬-send-text-message)
-	- [💬 Send media files](#💬-send-media-files)
-	- [💬 Send location details](#💬-send-location-details)
-	- [💬 Send media by link](#💬-send-media-by-link)
-	- [💬 Send reaction on message](#💬-send-reaction-on-message)
-	- [💬 Send reply on message](#💬-send-reply-on-message)
-	- [💬 Send reply with media](#💬-send-reply-with-media)
-	- [💬 Send reply with media url](#💬-send-reply-with-media-url)
+  - [💬 Short link](#💬-short-link)
+  - [💬 Send template](#💬-send-template)
+  - [💬 Send text message](#💬-send-text-message)
+  - [💬 Send media files](#💬-send-media-files)
+  - [💬 Send location details](#💬-send-location-details)
+  - [💬 Send media by link](#💬-send-media-by-link)
+  - [💬 Send reaction on message](#💬-send-reaction-on-message)
+  - [💬 Send reply on message](#💬-send-reply-on-message)
+  - [💬 Send reply with media](#💬-send-reply-with-media)
+  - [💬 Send reply with media url](#💬-send-reply-with-media-url)
+  - [📞 Register a number](#📞-register-a-number)
+  - [📞 Deegister a number](#📞-deregister-a-number)
 
 ### WhatsApp Business Configuration
+
 You must have WhatsApp apps in facebook developer, to use this package, please follow this [Guidelines](https://developers.facebook.com/).
 
-```dart 
+```dart
 WhatsApp whatsapp = WhatsApp();
 ```
+
 Configure `accessToken` and `fromNumberId`.
 
 ```dart
@@ -32,7 +37,9 @@ whatsapp.setup(
 ```
 
 #### 💬 Short link
+
 Generate the short link of the WhatsApp.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `message` - the message to be sent.
 - `compress` - pass `true` to compress the link.
@@ -47,19 +54,23 @@ whatsapp.short(
 ```
 
 #### 💬 Send template
+
 Send the template to the client.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `templateName` - the template name.
 
 ```dart
 whatsapp.messagesTemplate(
-	to: 910000000000, 
+	to: 910000000000,
 	templateName: "hello_world"
 );
 ```
 
 #### 💬 Send text message
+
 Send the text message to the client.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `message` - the message to be sent.
 - `previewUrl` - is used to preview the URL in the chat window.
@@ -71,12 +82,15 @@ whatsapp.messagesTemplate(
 	previewUrl: true
 );
 ```
+
 #### 💬 Send media files
+
 Send the media files to the client.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `mediaType` - the type of media such as image, document, audio, image, or video
 - `mediaId` - Use this edge to retrieve and delete media.
-  
+
 ```dart
 whatsapp.messagesMedia(
 	to: 910000000000,
@@ -86,7 +100,9 @@ whatsapp.messagesMedia(
 ```
 
 #### 💬 Send location details
+
 Send the location to the client.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `longitude` - the longitude of the location.
 - `latitude` - the latitude of the location.
@@ -102,8 +118,11 @@ whatsapp.messagesLocation(
 	address: "Rajasthan, India"
 );
 ```
+
 #### 💬 Send media by link
+
 Send the location to the client.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `mediaType` - the type of media such as image, document, audio, image, or video
 - `mediaLink` - the media to be sent.
@@ -119,7 +138,9 @@ whatsapp.messagesMediaByLink(
 ```
 
 #### 💬 Send reaction on message
+
 Send the location to the client.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `messageId` - the message id.
 - `emoji` - the emoji to be sent.
@@ -131,8 +152,11 @@ whatsapp.messagesReaction(
 	emoji: "👍"
 );
 ```
+
 #### 💬 Send reply on message
+
 Send the location to the client.
+
 - `to` - the phone number with country code but without the plus (+) sign.
 - `messageId` - the message id.
 - `message` - the message to be sent.
@@ -146,12 +170,15 @@ whatsapp.messagesReply(
 	previewUrl: true
 );
 ```
+
 #### 💬 Send reply with media
-  Reply to a media by ID
-  - `to` - the phone number with country code but without the plus (+) sign.
-  - `messageId` - the message id.
-  - `mediaType` - type of media such as image, document, audio or video
-  - `mediaId` - id of media to be replay.
+
+Reply to a media by ID
+
+- `to` - the phone number with country code but without the plus (+) sign.
+- `messageId` - the message id.
+- `mediaType` - type of media such as image, document, audio or video
+- `mediaId` - id of media to be replay.
 
 ```dart
 whatsapp.messagesReplyMedia(
@@ -163,26 +190,54 @@ whatsapp.messagesReplyMedia(
 ```
 
 #### 💬 Send reply with media url
-  Reply to a media by URL
-  - `to` - the phone number with country code but without the plus (+) sign.
-  - `messageId` - the message id.
-  - `mediaType` - type of media such as image, document, audio or video
-  - `mediaLink` - link of media to be replay.
-  - `caption` - caption of media to be replay.
+
+Reply to a media by URL
+
+- `to` - the phone number with country code but without the plus (+) sign.
+- `messageId` - the message id.
+- `mediaType` - type of media such as image, document, audio or video
+- `mediaLink` - link of media to be replay.
+- `caption` - caption of media to be replay.
 
 ```dart
 whatsapp.messagesReplyMediaUrl(
 	to: 910000000000,
 	messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
 	mediaType: "video",
-	medialInk: "http://example.com/video.mp4",
+	mediaLink: "http://example.com/video.mp4",
 	caption: "My Flutter Video"
 );
 ```
+
+#### 📞 Register a number
+
+Register a phone number
+
+- `pin` is 6-digit pin for Register number.
+
+```dart
+whatsapp.deregisterNumber(
+	pin:"123456"
+);
+```
+
+#### 📞 Deregister a number
+
+Deregister a phone number
+
+- `pin` is 6-digit pin for deregister number.
+
+```dart
+whatsapp.deregisterNumber(
+	pin:"123456"
+);
+```
+
 # Contributors
 
 [![chouhan-rahul](https://user-images.githubusercontent.com/82075108/193220114-cd307ff4-9176-448c-9be6-e8bdee70206d.svg)
 ](https://github.com/chouhan-rahul)
+
 # Report bugs or issues
 
 You are welcome to open a _[ticket](https://github.com/rohit-chouhan/whatsapp/issues)_ on github if any problems arise. New ideas are always welcome.
