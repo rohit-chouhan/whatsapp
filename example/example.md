@@ -136,6 +136,22 @@ class _HomeState extends State<Home> {
             },
             child: const Text("Send Reply with Media (Url)"),
           ),
+           TextButton(
+            onPressed: () async {
+              await whatsapp.registerNumber(
+                pin:"123456"
+              );
+            },
+            child: const Text("Register a number"),
+          ),
+           TextButton(
+            onPressed: () async {
+              await whatsapp.deregisterNumber(
+                pin:"123456"
+              );
+            },
+            child: const Text("Deregister a number"),
+          ),
         ],
       ),
     );
