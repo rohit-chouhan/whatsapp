@@ -6,18 +6,18 @@ _[![sponsor](https://user-images.githubusercontent.com/82075108/182797969-11208d
 WhatsApp API package for flutter, to send message and product information.
 
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)
-  - [💬 Short link](#💬-short-link)
-  - [💬 Send template](#💬-send-template)
-  - [💬 Send text message](#💬-send-text-message)
-  - [💬 Send media files](#💬-send-media-files)
-  - [💬 Send location details](#💬-send-location-details)
-  - [💬 Send media by link](#💬-send-media-by-link)
-  - [💬 Send reaction on message](#💬-send-reaction-on-message)
-  - [💬 Send reply on message](#💬-send-reply-on-message)
-  - [💬 Send reply with media](#💬-send-reply-with-media)
-  - [💬 Send reply with media url](#💬-send-reply-with-media-url)
-  - [📞 Register a number](#📞-register-a-number)
-  - [📞 Deegister a number](#📞-deregister-a-number)
+  - [💬 Short link](#💬---short-link)
+  - [💬 Send template](#💬---send-template)
+  - [💬 Send text message](#💬---send-text-message)
+  - [💬 Send media files](#💬---send-media-files)
+  - [💬 Send location details](#💬---send-location-details)
+  - [💬 Send media by link](#💬---send-media-by-link)
+  - [💬 Send reaction on message](#💬---send-reaction-on-message)
+  - [💬 Send reply on message](#💬---send-reply-on-message)
+  - [💬 Send reply with media](#💬---send-reply-with-media)
+  - [💬 Send reply with media url](#💬---send-reply-with-media-url)
+  - [📞 Register a number](#📞---register-a-number)
+  - [📞 Deegister a number](#📞---deregister-a-number)
 
 ### WhatsApp Business Configuration
 
