@@ -152,6 +152,22 @@ class _HomeState extends State<Home> {
             },
             child: const Text("Deregister a number"),
           ),
+           TextButton(
+            onPressed: () async {
+              await whatsapp.getWhatsAppBusinessAccounts(
+                inputToken:"EAAFl..."
+              );
+            },
+            child: const Text("Get Shared WhatsApp Business Account Id"),
+          ),
+          TextButton(
+            onPressed: () async {
+              await whatsapp.getWhatsAppBusinessAccountsList(
+                accountId:805021500648488
+              );
+            },
+            child: const Text("Get Shared WhatsApp Business Account List"),
+          ),
         ],
       ),
     );
