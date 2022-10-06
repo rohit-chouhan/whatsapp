@@ -10,10 +10,11 @@ WhatsApp API package for flutter, to send message and product information.
 	- [💬 Send text message](#💬-send-text-message)
 	- [💬 Send media files](#💬-send-media-files)
 	- [💬 Send location details](#💬-send-location-details)
-	- [💬 Send image by link](#💬-send-image-by-link)
-	- [💬 Send video by link](#💬-send-video-by-link)
+	- [💬 Send media by link](#💬-send-media-by-link)
 	- [💬 Send reaction on message](#💬-send-reaction-on-message)
 	- [💬 Send reply on message](#💬-send-reply-on-message)
+	- [💬 Send reply with media](#💬-send-reply-with-media)
+	- [💬 Send reply with media url](#💬-send-reply-with-media-url)
 
 ### WhatsApp Business Configuration
 You must have WhatsApp apps in facebook developer, to use this package, please follow this [Guidelines](https://developers.facebook.com/).
@@ -73,7 +74,7 @@ whatsapp.messagesTemplate(
 #### 💬 Send media files
 Send the media files to the client.
 - `to` - the phone number with country code but without the plus (+) sign.
-- `mediaType` - the type of media such as image, document, audio, image, video, or sticker.
+- `mediaType` - the type of media such as image, document, audio, image, or video
 - `mediaId` - Use this edge to retrieve and delete media.
   
 ```dart
@@ -101,30 +102,22 @@ whatsapp.messagesLocation(
 	address: "Rajasthan, India"
 );
 ```
-#### 💬 Send image by link
+#### 💬 Send media by link
 Send the location to the client.
 - `to` - the phone number with country code but without the plus (+) sign.
-- `imageLink` - the image to be sent.
+- `mediaType` - the type of media such as image, document, audio, image, or video
+- `mediaLink` - the media to be sent.
+- `caption` - the caption of media
 
 ```dart
-whatsapp.messagesImageByLink(
+whatsapp.messagesMediaByLink(
 	to: 910000000000,
-	imageLink: "https://example.com/image.png",
+	mediaType:"video",
+	mediaLink: "https://example.com/flutter.mp4",
+	caption:"My Flutter Video"
 );
 ```
-#### 💬 Send video by link
-Send the location to the client.
-- `to` - the phone number with country code but without the plus (+) sign.
-- `videoLink` - the video to be sent.
-- `caption` - the caption of the video.
 
-```dart
-whatsapp.messagesVideoByLink(
-	to: 910000000000,
-	videoLink: "https://example.com/video.mp4",
-	caption: "demo video"
-);
-```
 #### 💬 Send reaction on message
 Send the location to the client.
 - `to` - the phone number with country code but without the plus (+) sign.
@@ -151,6 +144,39 @@ whatsapp.messagesReply(
 	messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
 	message: "Hey, Flutter!",
 	previewUrl: true
+);
+```
+#### 💬 Send reply with media
+  Reply to a media by ID
+  - `to` - the phone number with country code but without the plus (+) sign.
+  - `messageId` - the message id.
+  - `mediaType` - type of media such as image, document, audio or video
+  - `mediaId` - id of media to be replay.
+
+```dart
+whatsapp.messagesReplyMedia(
+	to: 910000000000,
+	messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
+	mediaType: "image",
+	mediaId: "1000000000000000"
+);
+```
+
+#### 💬 Send reply with media url
+  Reply to a media by URL
+  - `to` - the phone number with country code but without the plus (+) sign.
+  - `messageId` - the message id.
+  - `mediaType` - type of media such as image, document, audio or video
+  - `mediaLink` - link of media to be replay.
+  - `caption` - caption of media to be replay.
+
+```dart
+whatsapp.messagesReplyMediaUrl(
+	to: 910000000000,
+	messageId: "wamid.xxxxxxxxxxxxxxxxxx==",
+	mediaType: "video",
+	medialInk: "http://example.com/video.mp4",
+	caption: "My Flutter Video"
 );
 ```
 # Contributors
