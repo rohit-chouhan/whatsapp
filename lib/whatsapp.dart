@@ -257,14 +257,14 @@ class WhatsApp {
     }
   }
 
-  
   /// Reply to a media by URL
   /// [to] is the phone number with country code but without the plus (+) sign.
   /// [messageId] is the message id.
   /// [mediaType] is type of media such as image, document, sticker, audio or video
   /// [mediaLink] is link of media to be sent.
   /// [caption] is caption of media to be sent.
-  Future messagesReplyMediaUrl({to, messageId, mediaType, mediaLink, caption}) async {
+  Future messagesReplyMediaUrl(
+      {to, messageId, mediaType, mediaLink, caption}) async {
     var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
 
     Map data = {
@@ -275,6 +275,42 @@ class WhatsApp {
       "type": mediaType,
       "$mediaType": {"link": mediaLink, "caption": caption}
     };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Register a phone number
+  /// [pin] is 6-digit pin for register number.
+  Future registerNumber({pin}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/register';
+
+    Map data = {"messaging_product": "whatsapp", "pin": pin};
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Deregister a phone number
+  /// [pin] is 6-digit pin for deregister number.
+  Future deregisterNumber({pin}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/deregister';
+
+    Map data = {"pin": pin};
 
     var body = json.encode(data);
 
