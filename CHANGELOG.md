@@ -1,3 +1,12 @@
+#### 2.0.0
+
+* Action Button Message
+* Upload media files
+* Delete media files
+* Retrive media url
+* Update Whatsapp business profile
+* Two Step Verification
+
 ## 1.1.1
 
 * New services

@@ -1,25 +1,35 @@
 <p align="center"><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner2.jpg"/></p>
 
 [![rohit-chouhan](https://user-images.githubusercontent.com/82075108/182797964-a92e0c59-b9ef-432d-92af-63b6475a4b1c.svg)](https://www.github.com/rohit-chouhan)
 _[![sponsor](https://user-images.githubusercontent.com/82075108/182797969-11208ddc-b84c-4618-8534-18388d24ac18.svg)](https://github.com/sponsors/rohit-chouhan)_
 
 WhatsApp API package for flutter, to send message and product information.
 
+<!-- TOC start -->
+
 - [WhatsApp Business Configuration](#whatsapp-business-configuration)
-  - [💬 Short link](#---short-link)
-  - [💬 Send template](#---send-template)
-  - [💬 Send text message](#---send-text-message)
-  - [💬 Send media files](#---send-media-files)
-  - [💬 Send location details](#---send-location-details)
-  - [💬 Send media by link](#---send-media-by-link)
-  - [💬 Send reaction on message](#---send-reaction-on-message)
-  - [💬 Send reply on message](#---send-reply-on-message)
-  - [💬 Send reply with media](#---send-reply-with-media)
-  - [💬 Send reply with media url](#---send-reply-with-media-url)
-  - [📞 Register a number](#---register-a-number)
-  - [📞 Deegister a number](#---deregister-a-number)
-  - [🆔 Get Shared WhatsApp Business Account Id](#---get-shared-whatsapp-business-account-id)
-  - [🆔 Get Shared WhatsApp Business Account List](#---get-shared-whatsapp-business-account-list)
+  - [💬 Short link](#short-link)
+  - [💬 Send template](#send-template)
+  - [💬 Send text message](#send-text-message)
+  - [💬 Send media files](#send-media-files)
+  - [💬 Send location details](#send-location-details)
+  - [💬 Send media by link](#send-media-by-link)
+  - [💬 Send reaction on message](#send-reaction-on-message)
+  - [💬 Send reply on message](#send-reply-on-message)
+  - [💬 Send reply with media](#send-reply-with-media)
+  - [💬 Send reply with media url](#send-reply-with-media-url)
+  - [📞 Register a number](#register-a-number)
+  - [📞 Deregister a number](#deregister-a-number)
+  - [🆔 Get Shared WhatsApp Business Account Id](#get-shared-whatsapp-business-account-id)
+  - [🆔 Get Shared WhatsApp Business Account List](#get-shared-whatsapp-business-account-list)
+  - [🔘 Send button options](#send-button-options)
+  - [📁 Upload media files](#upload-media-files)
+  - [📁 Delete media files](#delete-media-files)
+  - [📁 Retrive media url](#retrive-media-url)
+  - [🚀 Update Business profile](#update-business-profile)
+  - [🔐 Two step verification code](#two-step-verification-code)
+  <!-- TOC end -->
 
 ### WhatsApp Business Configuration
 
@@ -38,9 +48,9 @@ whatsapp.setup(
 );
 ```
 
-#### 💬 Short link
+#### Short link
 
-Generate the short link of the WhatsApp.
+💬 Generate the short link of the WhatsApp.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `message` - the message to be sent.
@@ -55,9 +65,9 @@ whatsapp.short(
 //return : https://wa.me/910000000000?text=Hy
 ```
 
-#### 💬 Send template
+#### Send template
 
-Send the template to the client.
+💬 Send the template to the client.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `templateName` - the template name.
@@ -69,9 +79,9 @@ whatsapp.messagesTemplate(
 );
 ```
 
-#### 💬 Send text message
+#### Send text message
 
-Send the text message to the client.
+💬 Send the text message to the client.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `message` - the message to be sent.
@@ -85,9 +95,9 @@ whatsapp.messagesTemplate(
 );
 ```
 
-#### 💬 Send media files
+#### Send media files
 
-Send the media files to the client.
+💬 Send the media files to the client.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `mediaType` - the type of media such as image, document, audio, image, or video
@@ -101,9 +111,9 @@ whatsapp.messagesMedia(
 );
 ```
 
-#### 💬 Send location details
+#### Send location details
 
-Send the location to the client.
+💬 Send the location to the client.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `longitude` - the longitude of the location.
@@ -121,9 +131,9 @@ whatsapp.messagesLocation(
 );
 ```
 
-#### 💬 Send media by link
+#### Send media by link
 
-Send the location to the client.
+💬 Send the location to the client.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `mediaType` - the type of media such as image, document, audio, image, or video
@@ -139,9 +149,9 @@ whatsapp.messagesMediaByLink(
 );
 ```
 
-#### 💬 Send reaction on message
+#### Send reaction on message
 
-Send the location to the client.
+💬 Send the location to the client.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `messageId` - the message id.
@@ -155,9 +165,9 @@ whatsapp.messagesReaction(
 );
 ```
 
-#### 💬 Send reply on message
+#### Send reply on message
 
-Send the location to the client.
+💬 Send the location to the client.
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `messageId` - the message id.
@@ -173,9 +183,9 @@ whatsapp.messagesReply(
 );
 ```
 
-#### 💬 Send reply with media
+#### Send reply with media
 
-Reply to a media by ID
+💬 Reply to a media by ID
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `messageId` - the message id.
@@ -191,9 +201,9 @@ whatsapp.messagesReplyMedia(
 );
 ```
 
-#### 💬 Send reply with media url
+#### Send reply with media url
 
-Reply to a media by URL
+💬 Reply to a media by URL
 
 - `to` - the phone number with country code but without the plus (+) sign.
 - `messageId` - the message id.
@@ -211,9 +221,9 @@ whatsapp.messagesReplyMediaUrl(
 );
 ```
 
-#### 📞 Register a number
+#### Register a number
 
-Register a phone number
+📞 Register a phone number
 
 - `pin` is 6-digit pin for Register number.
 
@@ -223,9 +233,9 @@ whatsapp.registerNumber(
 );
 ```
 
-#### 📞 Deregister a number
+#### Deregister a number
 
-Deregister a phone number
+📞 Deregister a phone number
 
 - `pin` is 6-digit pin for deregister number.
 
@@ -235,9 +245,9 @@ whatsapp.deregisterNumber(
 );
 ```
 
-#### 🆔 Get Shared WhatsApp Business Account Id
+#### Get Shared WhatsApp Business Account Id
 
-Get Shared WhatsApp Business Account Id
+🆔 Get Shared WhatsApp Business Account Id
 
 - `inputToken` - token generated after embedding the signup flow
 
@@ -247,15 +257,111 @@ whatsapp.getWhatsAppBusinessAccounts(
 );
 ```
 
-#### 🆔 Get Shared WhatsApp Business Account List
+#### Get Shared WhatsApp Business Account List
 
-Get Shared WhatsApp Business Account List
+🆔 Get Shared WhatsApp Business Account List
 
 - `accountId` - Business manager account Id
 
 ```dart
 whatsapp.getWhatsAppBusinessAccountsList(
 	accountId: 805021500648488
+);
+```
+
+#### Send button options
+
+🔘 Send message with action buttons for choice
+
+- `to` - the phone number with country code but without the plus (+) sign.
+- `bodyText` -the main body text of message
+- `buttons` - list of action buttons with id and text
+
+```dart
+whatsapp.messagesButton(
+	bodyText: "Do you love flutter",
+    buttons: [
+        {"id": "yes", "text": "👍 Yes"},
+        {"id": "no", "text": "✋ No"}
+	]
+);
+```
+
+#### Upload media files
+
+📁 Upload Media to WhatsApp Business
+
+- `mediaFile` - the file object to be send
+- `mediaName` - the name of file
+
+You need third-party packages for media uploads, for example [image_picker](https://pub.dev/packages/image_picker) for uploading images.
+
+```dart
+final ImagePicker _picker = ImagePicker();
+final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+whatsapp.uploadMedia(
+	mediaFile: image,
+	mediaName: "Flutter Logo"
+);
+```
+
+#### Delete media files
+
+📁 Delete uploaded media
+
+- `mediaId`- id of media file
+
+```dart
+whatsapp.deleteMedia(
+	mediaId: "1000000000000000"
+);
+```
+
+#### Retrive media url
+
+📁 Retrive URL of media
+
+- `mediaId`- id of media file
+
+```dart
+whatsapp.getMediaUrl(
+	mediaId: "1000000000000000"
+);
+```
+
+#### Update Business profile
+
+🚀 Update WhatsApp Business Account Details
+
+- `businessAddress` - address of business
+- `businessDescription` - description of business
+- `businessIndustry` - industry of business
+- `businessAbout` - about of your business
+- `businessEmail` - email of your business
+- `businessWebsites` - list of website to update
+- `businessProfileId` - image handle id to update profile picture of business
+
+```dart
+whatsapp.updateProfile(
+	businessAbout: "A.I.",
+	businessWebsites: ["https://tonystark.com"], //list of website
+	businessAddress: "New York",
+	businessDescription: "You know who i am, the Ironman",
+	businessEmail: "tony@ironman.com",
+	businessIndustry: "A.I",
+	businessProfileId: "10203949568543" //image handler id
+);
+```
+
+#### Two step verification code
+
+🔐 Set Two Step Verification Code
+
+- `pin` - 6-digit pin for two step verification.
+
+```dart
+whatsapp.setTwoStepVerification(
+	pin:"123456"
 );
 ```
 

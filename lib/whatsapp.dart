@@ -3,6 +3,8 @@ library whatsapp;
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:http_parser/http_parser.dart' as imageParse;
 
 class WhatsApp {
   String? _accessToken;
@@ -305,6 +307,24 @@ class WhatsApp {
     }
   }
 
+  /// Set Two Step Verification Code
+  /// [pin] is 6-digit pin for two step verification.
+  Future setTwoStepVerification({pin}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/register';
+
+    Map data = {"pin": pin};
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
   /// Deregister a phone number
   /// [pin] is 6-digit pin for deregister number.
   Future deregisterNumber({pin}) async {
@@ -345,6 +365,134 @@ class WhatsApp {
         'https://graph.facebook.com/v14.0/$parseAccountId/client_whatsapp_business_accounts';
 
     var response = await http.get(Uri.parse(url), headers: _headers);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Send message with action buttons for choice
+  /// [to] is the phone number with country code but without the plus (+) sign.
+  /// [bodyText] is the main body text of message
+  /// [buttons] is list of action buttons with id and text
+  messagesButton({to, bodyText, buttons}) async {
+    var url = 'https://graph.facebook.com/v14.0/$_fromNumberId/messages';
+
+    var buttonsList = [];
+    for (var i = 0; i < buttons.length; i++) {
+      buttonsList.add({
+        "type": "reply",
+        "reply": {"id": buttons[i]["id"], "title": buttons[i]["text"]}
+      });
+    }
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "recipient_type": "individual",
+      "to": to,
+      "type": "interactive",
+      "interactive": {
+        "type": "button",
+        "body": {"text": bodyText},
+        "action": {"buttons": buttonsList}
+      }
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  ///Upload Media to WhatsApp Business
+  ///[mediaFile] is the file object to be send
+  ///[mediaName] is the name of file
+  uploadMedia({required mediaFile, mediaType, mediaName}) async {
+    var uri =
+        Uri.parse('https://graph.facebook.com/v14.0/$_fromNumberId/media');
+
+    var request = http.MultipartRequest('POST', uri);
+    request.headers.addAll(_headers!);
+    request.fields['messaging_product'] = 'whatsapp';
+    request.files.add(http.MultipartFile.fromBytes(
+        'file', File(mediaFile.path).readAsBytesSync(),
+        filename: mediaName, contentType: mediaType));
+
+    var response = await request.send();
+    final respStr = await response.stream.bytesToString();
+    try {
+      return json.decode(respStr);
+    } catch (e) {
+      return respStr;
+    }
+  }
+
+  /// Retrive URL of media
+  /// [mediaId] is id of media file
+  Future getMediaUrl({mediaId}) async {
+    var url = 'https://graph.facebook.com/v14.0/$mediaId';
+
+    var response = await http.get(Uri.parse(url), headers: _headers);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Delete uploaded media
+  /// [mediaId] is id of media file
+  Future deleteMedia({mediaId}) async {
+    var url = 'https://graph.facebook.com/v14.0/$mediaId';
+
+    var response = await http.delete(Uri.parse(url), headers: _headers);
+    try {
+      return json.decode(response.body);
+    } catch (e) {
+      return response.body;
+    }
+  }
+
+  /// Update WhatsApp Business Account Details
+  /// [businessAddress] is address of business
+  /// [businessDescription] is description of business
+  /// [businessIndustry] is industry of business
+  /// [businessAbout] is about of your business
+  /// [businessEmail] is email of your business
+  /// [businessWebsites] is list of website to update
+  /// [businessProfileId] is image handle id to update profile picture of business
+  Future updateProfile(
+      {businessAddress,
+      businessDescription,
+      businessIndustry,
+      businessAbout,
+      businessEmail,
+      required List businessWebsites,
+      businessProfileId}) async {
+    var url =
+        'https://graph.facebook.com/v14.0/$_fromNumberId/whatsapp_business_profile';
+
+    Map data = {
+      "messaging_product": "whatsapp",
+      "address": businessAddress,
+      "description": businessDescription,
+      "vertical": businessIndustry,
+      "about": businessAbout,
+      "email": businessEmail,
+      "websites": businessWebsites,
+      "profile_picture_handle": businessProfileId
+    };
+
+    var body = json.encode(data);
+
+    var response =
+        await http.post(Uri.parse(url), headers: _headers, body: body);
     try {
       return json.decode(response.body);
     } catch (e) {
