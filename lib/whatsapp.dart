@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'package:http_parser/http_parser.dart' as imageParse;
 
 class WhatsApp {
   String? _accessToken;
