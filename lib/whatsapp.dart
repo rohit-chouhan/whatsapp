@@ -564,8 +564,8 @@ class WhatsApp {
   /// Return  The generated whatsapp link
   String getLink({
     required String phoneNumber,
-    String message = '',
-    bool shortLink = false,
+    String? message,
+    bool? shortLink = false,
     List<String>? bold,
     List<String>? italic,
     List<String>? strikethrough,
