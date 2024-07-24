@@ -7,7 +7,7 @@ class TextService {
 
   TextService(this.accessToken, this.fromNumberId, this.request);
 
-  getLink(
+  String getLink(
     String phoneNumber,
     String? message,
     bool? shortLink,
@@ -15,7 +15,7 @@ class TextService {
     List<String>? italic,
     List<String>? strikethrough,
     List<String>? monospace,
-  ) async {
+  ) {
     // Helper function to apply formatting
     String applyFormatting(String text, String symbol) {
       return '$symbol$text$symbol';
