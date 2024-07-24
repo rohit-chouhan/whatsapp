@@ -23,10 +23,6 @@ screenshots:
   - description: "© WhatsApp"
     path: logo.png
 
-flutter:
-  assets:
-    - test/
-
 topics:
   - whatsapp
   - whatsapp_business
