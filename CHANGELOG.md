@@ -1,5 +1,13 @@
 ## 3.0.0
 
+- Comprehensive documentation is now available at [whatsapp-flutter.github.io](https://whatsapp-flutter.github.io)
+- setup method removed, now you can defined using constructor.
+- The entire library has been refactored for improved performance and maintainability.
+- Updated to support the latest version of the WhatsApp Graph API.
+- New methods have been added to enhance functionality.
+- Users now have the ability to change the API version.
+- Multiple bug fixes have been implemented to ensure a smoother experience.
+
 ## 2.0.0
 
 - Action Button Message
