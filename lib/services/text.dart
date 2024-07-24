@@ -16,7 +16,7 @@ class TextService {
     List<String>? strikethrough,
     List<String>? monospace,
   ) {
-    // Helper function to apply formatting
+    // Helper function to apply formatting on text based on symbol parameter
     String applyFormatting(String text, String symbol) {
       return '$symbol$text$symbol';
     }
