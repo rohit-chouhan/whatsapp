@@ -18,6 +18,15 @@ class MediaService {
     return request;
   }
 
+  Future<Request> uploadMediaFileByUrl(String fileUrl, String fileType) async {
+    await request.uploadMediaFileByUrl(
+        accessToken: accessToken,
+        phoneNumberId: fromNumberId,
+        fileUrl: fileUrl,
+        fileType: fileType);
+    return request;
+  }
+
   Future<Request> getMedia(String mediaId) async {
     await request.getMedia(accessToken, mediaId);
     return request;
