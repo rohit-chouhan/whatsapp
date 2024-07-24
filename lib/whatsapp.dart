@@ -212,7 +212,7 @@ class WhatsApp {
   }
 
   /// Read (Seen) the messages received by the specified phone number
-  /// [messageId] The message ID to be marked as read (optional)
+  /// [messageId] The message ID to be marked as read
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
   Future<Request> markAsRead({required String messageId}) async {
