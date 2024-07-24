@@ -40,7 +40,7 @@ class Request {
 
       errorMessage = jsonResponse['error']?['message'];
       messageId = jsonResponse['messages']?[0]?['id'];
-      phoneNumber = jsonResponse['input']?[0]?['to'];
+      phoneNumber = jsonResponse['contacts']?[0]?['input'];
 
       if (res.statusCode >= 400) {
         error = res.reasonPhrase;
