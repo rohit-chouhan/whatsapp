@@ -561,7 +561,7 @@ class WhatsApp {
   /// [strikethrough] Add strikethrough formatting to the message (optional)
   /// [monospace] Add monospace formatting to the message (optional)
   ///
-  /// Return  The generated whatsapp link
+  /// Return The generated whatsapp message link
   String getLink({
     required String phoneNumber,
     String? message,
@@ -571,8 +571,7 @@ class WhatsApp {
     List<String>? strikethrough,
     List<String>? monospace,
   }) {
-    String res = _textService.getLink(phoneNumber, message, shortLink, bold,
-        italic, strikethrough, monospace);
-    return res;
+    return _textService.getLink(phoneNumber, message, shortLink, bold, italic,
+        strikethrough, monospace);
   }
 }
