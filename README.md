@@ -44,13 +44,13 @@ if(res.isSuccess()){// when message sent
   print(res.getResponse())
 } else {   //when something went wrong
   //Will return HTTP CODE
-  print('HTTP Code: $res.getHttpCode()');
+  print('HTTP Code: ${res.getHttpCode()}');
 
   // Will return exact error from WhatsApp Cloud API
-  print('API Error: $res.getErrorMessage()');
+  print('API Error: ${res.getErrorMessage()}');
 
   // Will return HTTP Request error
-  print('Request Error: $res.getError()');
+  print('Request Error: ${res.getError()}');
 }
 ```
 
