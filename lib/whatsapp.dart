@@ -383,6 +383,17 @@ class WhatsApp {
     return res;
   }
 
+  /// Upload media file to business server by Url
+  /// [fileUrl] Public file url
+  /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
+  ///
+  /// return String The URL of the uploaded media file
+  Future<Request> uploadMediaFileByUrl(
+      {required String fileUrl, required String fileType}) async {
+    Request res = await _mediaService.uploadMediaFileByUrl(fileUrl, fileType);
+    return res;
+  }
+
   /// Get media url and information by media ID
   /// [mediaId] The media ID of the uploaded file
   ///
