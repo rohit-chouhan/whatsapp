@@ -7,7 +7,7 @@ class MessageService {
 
   MessageService(this.accessToken, this.fromNumberId, this.request);
 
-  Future<Request> markAsRead(String phoneNumber, String messageId) async {
+  Future<Request> markAsRead(String messageId) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
