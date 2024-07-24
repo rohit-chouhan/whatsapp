@@ -33,24 +33,29 @@ var res = await whatsapp.sendMessage(
   previewUrl : true,
 );
 
-if(res.isSuccess()){// when message sent
-  //Return id of message
-  print(res.getMessageId());
+if (res.isSuccess()) {
+    // when message sent
+    //Return id of message
+    debugPrint('Message ID: ${res.getMessageId()}');
 
-  //Return number where message sent
-  print(res.getPhoneNumber());
+    //Return number where message sent
+    debugPrint('Message sent to: ${res.getPhoneNumber()}');
 
-  //Return exact API Response Body
-  print(res.getResponse())
-} else {   //when something went wrong
-  //Will return HTTP CODE
-  print('HTTP Code: ${res.getHttpCode()}');
+    //Return exact API Response Body
+    debugPrint('API Response: ${res.getResponse().toString()}');
+} else {
+    //when something went wrong
+    //Will return HTTP CODE
+    debugPrint('HTTP Code: ${res.getHttpCode()}');
 
-  // Will return exact error from WhatsApp Cloud API
-  print('API Error: ${res.getErrorMessage()}');
+    // Will return exact error from WhatsApp Cloud API
+    debugPrint('API Error: ${res.getErrorMessage()}');
 
-  // Will return HTTP Request error
-  print('Request Error: ${res.getError()}');
+    // Will return HTTP Request error
+    debugPrint('Request Error: ${res.getError()}');
+
+    //Return exact API Response Body
+    debugPrint('API Response: ${res.getResponse().toString()}');
 }
 ```
 
