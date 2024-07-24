@@ -212,13 +212,11 @@ class WhatsApp {
   }
 
   /// Read (Seen) the messages received by the specified phone number
-  /// [phoneNumber] The phone number with country code to which the messages will be read
   /// [messageId] The message ID to be marked as read (optional)
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> markAsRead(
-      {required String phoneNumber, required String messageId}) async {
-    Request res = await _messageService.markAsRead(phoneNumber, messageId);
+  Future<Request> markAsRead({required String messageId}) async {
+    Request res = await _messageService.markAsRead(messageId);
     return res;
   }
 
