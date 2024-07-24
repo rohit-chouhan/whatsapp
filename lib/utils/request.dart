@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -145,6 +146,61 @@ class Request {
     }
   }
 
+  Future<void> uploadMediaFileByUrl({
+    required String phoneNumberId,
+    required String accessToken,
+    required String fileUrl,
+    required String fileType,
+  }) async {
+    HttpOverrides.global = MyHttpOverrides();
+
+    try {
+      // Download the file from the public URL
+      var fileResponse = await http.get(Uri.parse(fileUrl));
+      if (fileResponse.statusCode != 200) {
+        throw Exception('Failed to download file');
+      }
+
+      // Get the file bytes
+      Uint8List fileBytes = fileResponse.bodyBytes;
+
+      var uri =
+          Uri.parse('https://graph.facebook.com/v20.0/$phoneNumberId/media');
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers.addAll({"Authorization": "Bearer $accessToken"});
+      request.fields['type'] = fileType;
+      request.fields['messaging_product'] = 'whatsapp';
+
+      request.files.add(http.MultipartFile.fromBytes(
+        'file',
+        fileBytes,
+        filename: 'upload.jpg', // Replace with actual filename if available
+        contentType: MediaType.parse(fileType),
+      ));
+
+      var resp = await request.send();
+      var res = await http.Response.fromStream(resp);
+
+      // Declare your class variables here or ensure they are accessible
+      httpCode = res.statusCode;
+      response = res.body;
+
+      if (res.statusCode >= 400) {
+        // Handle error status codes
+        var jsonResponse = jsonDecode(res.body);
+        errorMessage = jsonResponse['error']?['message'] ?? 'Unknown error';
+      } else {
+        // Handle successful response
+        var jsonResponse = jsonDecode(res.body);
+        mediaId = jsonResponse['id'] ?? '';
+      }
+    } catch (e) {
+      // Handle exceptions
+      error = 'Exception uploading media: $e';
+    }
+  }
+
   Future<void> getMedia(String accessToken, String mediaId) async {
     final Uri uri = Uri.parse('$url$mediaId');
 
@@ -266,5 +322,14 @@ class Request {
   /// Get Uploaded media file size. Returns null if the request has not been made yet or if there was
   String? getMediaFileSize() {
     return mediaFileSize;
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
