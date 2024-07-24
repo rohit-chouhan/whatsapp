@@ -9,7 +9,7 @@ import 'package:whatsapp/whatsapp.dart';
 
 void main() {
   const accessToken =
-      'EAAGp6aTb8wMBOyKsEeRNbF444OPJKEfbYBORyHNqrrR4OxXlFRNBSsb9ZAFXMZC1Y8I9Rba34X6jFMrvopPdZBZB7DMgFIcDXOcbngmuUmobZBERiwZCO78CZArrR9KLpEqo2TlouoHFPRceVUrKerooxn6h9VmMlwTsA7n13ZBx5C2ZAUOwBwSYM7Kfdhy4H0LjqZCt15FggtFSZCrz5aZCa9k7te0Cr6O0CeVmeecZD';
+      'EAAGp6aTb8wMBOZBGuOHRAg5QZAjALfgZBpnYIxdrzHnN0LOqPSP9cikYPDUlwqGDpY5OhyukgxunXnH0SPhfCs2SI3wQM4iUFVF4fXo7SLfkIRUrGbnB8wtDaEsEsErdTF0uHkSa974Q92SfRNDZBLXr23XK7gsbNPX5WZBlbvUJGrmHyiuW6mnHhTUuMq3Pk10VhawhFZAD5NZCZArjSZAUHzWI0uakEHbgCf6UZD';
   const fromNumberId = '108277245242985';
   const phoneNumber = '917023042306';
   var testMessageId = '';
@@ -279,9 +279,20 @@ void main() {
       file: File('test/image.png'),
       fileType: 'image/png',
     );
-    debugPrint(res.getMediaId()!);
+    debugPrint(res.getMediaId());
     testResponse(res);
     expect(res.isSuccess(), true);
+  });
+
+  test('uploadMediaFileByUrl()', () async {
+    var res = await client.uploadMediaFileByUrl(
+      fileUrl:
+          'https://www.akc.org/wp-content/uploads/2015/03/so-you-want-to-breed-dogs-500x500.jpg',
+      fileType: 'image/jpeg',
+    );
+    debugPrint(res.getMediaId());
+    testResponse(res);
+    //expect(res.isSuccess(), true);
   });
 
   test('getMedia()', () async {
@@ -392,7 +403,8 @@ void main() {
 testResponse(Request res) {
   if (!res.isSuccess()) {
     debugPrint('Response: ${res.getResponse()}');
-    debugPrint('Error: ${res.getErrorMessage()}');
+    debugPrint('Error API: ${res.getErrorMessage()}');
+    debugPrint('Error: ${res.getError()}');
   } else {
     debugPrint('ID: ${res.getMessageId()}');
   }
