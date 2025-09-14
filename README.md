@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/></p>
 
-This Flutter package allows you to integrate the WhatsApp Business API into your Flutter applications, enabling features such as sending `messages`, `media`, `templates`, `business information`, `interactives`, and more.
+This Flutter package allows you to integrate the WhatsApp Business API into your Flutter applications, enabling features such as sending `messages`, `media`, `templates`, `business information`, `interactives`, `flows`, `catalog messages`, and more. Updated to support the latest WhatsApp Business API v21.0.
 
 [![rohit-chouhan](https://user-images.githubusercontent.com/82075108/182797964-a92e0c59-b9ef-432d-92af-63b6475a4b1c.svg)](https://www.github.com/rohit-chouhan) _[![sponsor](https://user-images.githubusercontent.com/82075108/182797969-11208ddc-b84c-4618-8534-18388d24ac18.svg)](https://github.com/sponsors/rohit-chouhan)_
 
@@ -19,7 +19,15 @@ Other useful links:
 - [Return Methods](https://whatsapp-flutter.github.io/docs/return-methods) will help you determine your request.
 - [Method Usage](https://whatsapp-flutter.github.io/docs/method-usage) contains important information to help you get started.
 
-Example:
+## New Features in v4.0.0
+
+- **Flow Messages**: Send interactive flow messages for enhanced user experience
+- **Catalog & Product Messages**: Send product information and catalog messages for e-commerce
+- **Message Status Tracking**: Track message delivery and read status
+- **Enhanced Error Handling**: Better exception handling with specific error types
+- **Updated API Version**: Now supports WhatsApp Business API v21.0
+
+## Basic Usage
 
 ```dart
 const accessToken ='EAAGp6aTb8.....';
@@ -57,6 +65,38 @@ if (res.isSuccess()) {
     //Return exact API Response Body
     debugPrint('API Response: ${res.getResponse().toString()}');
 }
+```
+
+## New Features Examples
+
+### Flow Messages
+```dart
+var res = await whatsapp.sendFlowMessage(
+  phoneNumber: 'PHONE_NUMBER',
+  flowToken: 'your_flow_token',
+  flowId: 'your_flow_id',
+  flowCta: 'Start Flow',
+  flowActionPayload: '{"screen": "SCREEN_NAME"}',
+  headerText: 'Welcome!',
+  bodyText: 'Complete this flow to get started.',
+);
+```
+
+### Catalog Messages
+```dart
+var res = await whatsapp.sendCatalogMessage(
+  phoneNumber: 'PHONE_NUMBER',
+  catalogId: 'your_catalog_id',
+  productRetailerId: 'product_retailer_id',
+  headerText: 'Check out this product!',
+  bodyText: 'Amazing product at great price.',
+);
+```
+
+### Message Status
+```dart
+var res = await whatsapp.getMessageStatus('message_id');
+var status = res.getResponse()?['status'];
 ```
 
 # Contributors

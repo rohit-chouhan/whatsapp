@@ -16,11 +16,14 @@ import 'package:whatsapp/services/message.dart';
 import 'package:whatsapp/services/phone.dart';
 import 'package:whatsapp/services/reaction.dart';
 import 'package:whatsapp/services/registration.dart';
-import 'package:whatsapp/services/replay.dart';
+import 'package:whatsapp/services/reply.dart';
 import 'package:whatsapp/services/sticker.dart';
 import 'package:whatsapp/services/template.dart';
 import 'package:whatsapp/services/text.dart';
 import 'package:whatsapp/services/video.dart';
+import 'package:whatsapp/services/flow.dart';
+import 'package:whatsapp/services/catalog.dart';
+import 'package:whatsapp/services/status.dart';
 import 'package:whatsapp/utils/request.dart';
 
 class WhatsApp {
@@ -43,9 +46,12 @@ class WhatsApp {
   late final BusinessService _businessService;
   late final PhoneService _phoneService;
   late final RegistrationService _registrationService;
-  late final ReplayService _replayService;
+  late final ReplyService _replyService;
   late final TemplateService _templateService;
   late final CustomService _customService;
+  late final FlowService _flowService;
+  late final CatalogService _catalogService;
+  late final StatusService _statusService;
 
   WhatsApp(this._accessToken, this._fromNumberId) {
     _request = Request();
@@ -67,9 +73,12 @@ class WhatsApp {
     _phoneService = PhoneService(_accessToken, _fromNumberId, _request);
     _registrationService =
         RegistrationService(_accessToken, _fromNumberId, _request);
-    _replayService = ReplayService(_accessToken, _fromNumberId, _request);
+    _replyService = ReplyService(_accessToken, _fromNumberId, _request);
     _templateService = TemplateService(_accessToken, _fromNumberId, _request);
     _customService = CustomService(_accessToken, _fromNumberId, _request);
+    _flowService = FlowService(_accessToken, _fromNumberId, _request);
+    _catalogService = CatalogService(_accessToken, _fromNumberId, _request);
+    _statusService = StatusService(_accessToken, _fromNumberId, _request);
   }
 
   /// Method to set custom version of the Facebook Graph API.
@@ -277,22 +286,22 @@ class WhatsApp {
     return res;
   }
 
-  /// Send Interactive Replay Button to the specified phone number
-  /// [phoneNumber] The phone number with country code to which the interactive replay button will be sent
-  /// [headerInteractive] The header text for the interactive replay button
-  /// [bodyText] The body text for the interactive replay button
-  /// [footerText] The footer text for the interactive replay button
+  /// Send Interactive Reply Button to the specified phone number
+  /// [phoneNumber] The phone number with country code to which the interactive reply button will be sent
+  /// [headerInteractive] The header text for the interactive reply button
+  /// [bodyText] The body text for the interactive reply button
+  /// [footerText] The footer text for the interactive reply button
   /// [interactiveReplyButtons] The interactive reply buttons to be sent
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
 
-  Future<Request> sendInteractiveReplayButton(
+  Future<Request> sendInteractiveReplyButton(
       {required String phoneNumber,
       required Map<String, dynamic> headerInteractive,
       required String bodyText,
       required String footerText,
       required List<Map<String, dynamic>> interactiveReplyButtons}) async {
-    Request res = await _interactiveService.sendInteractiveReplayButtons(
+    Request res = await _interactiveService.sendInteractiveReplyButtons(
         phoneNumber,
         headerInteractive,
         bodyText,
@@ -302,11 +311,11 @@ class WhatsApp {
   }
 
   /// Send Interactive Lists to the specified phone number
-  /// [phoneNumber] The phone number with country code to which the interactive replay button will be sent
-  /// [headerText] The header text for the interactive replay button (optional)
-  /// [bodyText] The body text for the interactive replay button
-  /// [footerText] The footer text for the interactive replay button (optional)
-  /// [buttonText] The text for the interactive replay button (optional)
+  /// [phoneNumber] The phone number with country code to which the interactive reply button will be sent
+  /// [headerText] The header text for the interactive reply button (optional)
+  /// [bodyText] The body text for the interactive reply button
+  /// [footerText] The footer text for the interactive reply button (optional)
+  /// [buttonText] The text for the interactive reply button (optional)
   /// [sections] Sections of interactive lists to be sent
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
@@ -324,12 +333,12 @@ class WhatsApp {
   }
 
   /// Send Interactive for Call-To-Action Url to the specified phone number
-  /// [phoneNumber] The phone number with country code to which the interactive replay button will be sent
-  /// [headerText] The header text for the interactive replay button (optional)
-  /// [bodyText] The body text for the interactive replay button
-  /// [footerText] The footer text for the interactive replay button (optional)
-  /// [buttonText] The text for the interactive replay button (optional)
-  /// [actionUrl] Url to open when the interactive replay button is clicked
+  /// [phoneNumber] The phone number with country code to which the interactive reply button will be sent
+  /// [headerText] The header text for the interactive reply button (optional)
+  /// [bodyText] The body text for the interactive reply button
+  /// [footerText] The footer text for the interactive reply button (optional)
+  /// [buttonText] The text for the interactive reply button (optional)
+  /// [actionUrl] Url to open when the interactive reply button is clicked
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
 
@@ -509,18 +518,18 @@ class WhatsApp {
     return res;
   }
 
-  /// Send a replay message to the message
+  /// Send a reply message to the message
   ///
-  /// [phoneNumber] The phone number with country code to which the replay message will be sent
-  /// [messageId] The message ID of the message to be replayed
-  /// [replay] The replay message content
+  /// [phoneNumber] The phone number with country code to which the reply message will be sent
+  /// [messageId] The message ID of the message to be replied to
+  /// [reply] The reply message content
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> replay(
-      {required phoneNumber,
+  Future<Request> reply(
+      {required String phoneNumber,
       required String messageId,
-      required Map<String, dynamic> replay}) async {
-    Request res = await _replayService.replay(phoneNumber, messageId, replay);
+      required Map<String, dynamic> reply}) async {
+    Request res = await _replyService.reply(phoneNumber, messageId, reply);
     return res;
   }
 
@@ -532,7 +541,7 @@ class WhatsApp {
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
   Future<Request> sendTemplate(
-      {required phoneNumber,
+      {required String phoneNumber,
       required String template,
       required String language,
       List<Map<String, dynamic>>? placeholder}) async {
@@ -558,6 +567,105 @@ class WhatsApp {
   Future<Request> sendCustomRequest(
       {required String path, required Map<String, dynamic> payload}) async {
     Request res = await _customService.sendCustomRequest(path, payload);
+    return res;
+  }
+
+  /// Send a Flow message to the specified phone number
+  /// [phoneNumber] The phone number with country code to which the flow message will be sent
+  /// [flowToken] The flow token for the flow message
+  /// [flowId] The flow ID for the flow message
+  /// [flowCta] The call-to-action text for the flow message
+  /// [flowActionPayload] The payload for the flow action
+  /// [headerText] The header text for the flow message (optional)
+  /// [bodyText] The body text for the flow message (optional)
+  /// [footerText] The footer text for the flow message (optional)
+  ///
+  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  Future<Request> sendFlowMessage({
+    required String phoneNumber,
+    required String flowToken,
+    required String flowId,
+    required String flowCta,
+    required String flowActionPayload,
+    String? headerText,
+    String? bodyText,
+    String? footerText,
+  }) async {
+    Request res = await _flowService.sendFlowMessage(
+      phoneNumber: phoneNumber,
+      flowToken: flowToken,
+      flowId: flowId,
+      flowCta: flowCta,
+      flowActionPayload: flowActionPayload,
+      headerText: headerText,
+      bodyText: bodyText,
+      footerText: footerText,
+    );
+    return res;
+  }
+
+  /// Send a catalog message to the specified phone number
+  /// [phoneNumber] The phone number with country code to which the catalog message will be sent
+  /// [catalogId] The catalog ID for the catalog message
+  /// [productRetailerId] The product retailer ID for the catalog message
+  /// [headerText] The header text for the catalog message (optional)
+  /// [bodyText] The body text for the catalog message (optional)
+  /// [footerText] The footer text for the catalog message (optional)
+  ///
+  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  Future<Request> sendCatalogMessage({
+    required String phoneNumber,
+    required String catalogId,
+    required String productRetailerId,
+    String? headerText,
+    String? bodyText,
+    String? footerText,
+  }) async {
+    Request res = await _catalogService.sendCatalogMessage(
+      phoneNumber: phoneNumber,
+      catalogId: catalogId,
+      productRetailerId: productRetailerId,
+      headerText: headerText,
+      bodyText: bodyText,
+      footerText: footerText,
+    );
+    return res;
+  }
+
+  /// Send a product message to the specified phone number
+  /// [phoneNumber] The phone number with country code to which the product message will be sent
+  /// [catalogId] The catalog ID for the product message
+  /// [productRetailerId] The product retailer ID for the product message
+  ///
+  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  Future<Request> sendProductMessage({
+    required String phoneNumber,
+    required String catalogId,
+    required String productRetailerId,
+  }) async {
+    Request res = await _catalogService.sendProductMessage(
+      phoneNumber: phoneNumber,
+      catalogId: catalogId,
+      productRetailerId: productRetailerId,
+    );
+    return res;
+  }
+
+  /// Get message status by message ID
+  /// [messageId] The message ID to get status for
+  ///
+  /// return Request The response object containing the HTTP response code, error message, and message status
+  Future<Request> getMessageStatus(String messageId) async {
+    Request res = await _statusService.getMessageStatus(messageId);
+    return res;
+  }
+
+  /// Mark message as delivered
+  /// [messageId] The message ID to mark as delivered
+  ///
+  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  Future<Request> markAsDelivered(String messageId) async {
+    Request res = await _statusService.markAsDelivered(messageId);
     return res;
   }
 

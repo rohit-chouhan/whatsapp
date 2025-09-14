@@ -16,7 +16,7 @@ class Request {
   String? mediaMimeType;
   String? mediaSha256;
   String? mediaFileSize;
-  String url = 'https://graph.facebook.com/v19.0/';
+  String url = 'https://graph.facebook.com/v21.0/';
 
   Future<void> post(String endpoint, Map<String, String> headers,
       Map<String, dynamic>? body) async {
@@ -114,7 +114,7 @@ class Request {
   }) async {
     try {
       var uri =
-          Uri.parse('https://graph.facebook.com/v20.0/$phoneNumberId/media');
+          Uri.parse('https://graph.facebook.com/v21.0/$phoneNumberId/media');
 
       var request = http.MultipartRequest('POST', uri);
       request.headers.addAll({"Authorization": "Bearer $accessToken"});
@@ -165,7 +165,7 @@ class Request {
       Uint8List fileBytes = fileResponse.bodyBytes;
 
       var uri =
-          Uri.parse('https://graph.facebook.com/v20.0/$phoneNumberId/media');
+          Uri.parse('https://graph.facebook.com/v21.0/$phoneNumberId/media');
 
       var request = http.MultipartRequest('POST', uri);
       request.headers.addAll({"Authorization": "Bearer $accessToken"});

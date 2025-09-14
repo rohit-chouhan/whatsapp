@@ -1,13 +1,13 @@
 import 'package:whatsapp/utils/request.dart';
 
-class ReplayService {
+class ReplyService {
   final String accessToken;
   final String fromNumberId;
   final Request request;
 
-  ReplayService(this.accessToken, this.fromNumberId, this.request);
+  ReplyService(this.accessToken, this.fromNumberId, this.request);
 
-  Future<Request> replay(String phoneNumber, String messageId, replay) async {
+  Future<Request> reply(String phoneNumber, String messageId, Map<String, dynamic> reply) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
@@ -20,11 +20,9 @@ class ReplayService {
       "context": {"message_id": messageId}
     };
 
-    var append = replay;
-
     final Map<String, dynamic> mergedMap = {
       ...body,
-      ...append,
+      ...reply,
     };
 
     await request.post('$fromNumberId/messages', headers, mergedMap);
