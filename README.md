@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png"/></p>
 
-This Flutter package allows you to integrate the WhatsApp Business API into your Flutter applications, enabling features such as sending `messages`, `media`, `templates`, `business information`, `interactives`, `flows`, `catalog messages`, and more. Updated to support the latest WhatsApp Business API v21.0.
+This Flutter package allows you to integrate the WhatsApp Business API into your Flutter applications, enabling features such as sending `messages`, `media`, `templates`, `business information`, `interactives`, `flows`, `catalog messages`, and more. Updated to support the latest WhatsApp Business API v23.0.
 
 [![rohit-chouhan](https://user-images.githubusercontent.com/82075108/182797964-a92e0c59-b9ef-432d-92af-63b6475a4b1c.svg)](https://www.github.com/rohit-chouhan) _[![sponsor](https://user-images.githubusercontent.com/82075108/182797969-11208ddc-b84c-4618-8534-18388d24ac18.svg)](https://github.com/sponsors/rohit-chouhan)_
 

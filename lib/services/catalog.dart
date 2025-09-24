@@ -9,7 +9,6 @@ class CatalogService {
 
   /// Send a catalog message to the specified phone number
   /// [phoneNumber] The phone number with country code to which the catalog message will be sent
-  /// [catalogId] The catalog ID for the catalog message
   /// [productRetailerId] The product retailer ID for the catalog message
   /// [headerText] The header text for the catalog message (optional)
   /// [bodyText] The body text for the catalog message (optional)
@@ -18,7 +17,6 @@ class CatalogService {
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
   Future<Request> sendCatalogMessage({
     required String phoneNumber,
-    required String catalogId,
     required String productRetailerId,
     String? headerText,
     String? bodyText,
@@ -36,12 +34,6 @@ class CatalogService {
       "type": "interactive",
       "interactive": {
         "type": "catalog_message",
-        "header": headerText != null
-            ? {
-                "type": "text",
-                "text": headerText,
-              }
-            : null,
         "body": bodyText != null
             ? {
                 "text": bodyText,
@@ -55,17 +47,13 @@ class CatalogService {
         "action": {
           "name": "catalog_message",
           "parameters": {
-            "catalog_id": catalogId,
-            "product_retailer_id": productRetailerId,
+            "thumbnail_product_retailer_id": productRetailerId,
           }
         }
       }
     };
 
     // Remove null values
-    if (body["interactive"]["header"] == null) {
-      body["interactive"].remove("header");
-    }
     if (body["interactive"]["body"] == null) {
       body["interactive"].remove("body");
     }
@@ -83,11 +71,12 @@ class CatalogService {
   /// [productRetailerId] The product retailer ID for the product message
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendProductMessage({
-    required String phoneNumber,
-    required String catalogId,
-    required String productRetailerId,
-  }) async {
+  Future<Request> sendProductMessage(
+      {required String phoneNumber,
+      required String catalogId,
+      required String productRetailerId,
+      String? bodyText,
+      String? footerText}) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
@@ -97,12 +86,23 @@ class CatalogService {
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
       "to": phoneNumber,
-      "type": "product",
-      "product": {
-        "catalog_id": catalogId,
-        "product_retailer_id": productRetailerId,
+      "type": "interactive",
+      "interactive": {
+        "type": "product",
+        "action": {
+          "catalog_id": catalogId,
+          "product_retailer_id": productRetailerId
+        }
       }
     };
+
+    if (bodyText != null) {
+      body["interactive"]["body"] = {"text": bodyText};
+    }
+
+    if (footerText != null) {
+      body["interactive"]["footer"] = {"text": footerText};
+    }
 
     await request.post('$fromNumberId/messages', headers, body);
     return request;

@@ -23,7 +23,7 @@ class FlowService {
     required String flowToken,
     required String flowId,
     required String flowCta,
-    required String flowActionPayload,
+    required Map<String, dynamic> flowActionPayload,
     String? headerText,
     String? bodyText,
     String? footerText,

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 class NetworkException implements Exception {
   final String message;
   NetworkException(this.message);
@@ -39,30 +43,61 @@ class WhatsAppException implements Exception {
   }
 
   /// Create a WhatsAppException from API response
-  factory WhatsAppException.fromResponse(Map<String, dynamic> response) {
-    final error = response['error'];
-    if (error != null) {
+  factory WhatsAppException.fromResponse(http.Response response) {
+    try {
+      final Map<String, dynamic> decodedBody = jsonDecode(response.body);
+      final error = decodedBody['error'];
+
+      if (error != null) {
+        final message = error['message'] as String? ?? 'Unknown error';
+        final code = error['code']; // Remove the `as int?` cast
+        final type = error['type'] as String?;
+
+        // Explicitly check for the type of `code` before converting.
+        String? errorCodeString;
+        if (code is int) {
+          errorCodeString = code.toString();
+        } else if (code is String) {
+          errorCodeString = code;
+        }
+
+        return WhatsAppException(
+          message,
+          statusCode: response.statusCode,
+          errorCode: errorCodeString, // This is now a nullable String.
+          errorType: type,
+          details: error,
+        );
+      }
+    } on FormatException {
       return WhatsAppException(
-        error['message'] ?? 'Unknown error',
-        statusCode: response['status_code'],
-        errorCode: error['code']?.toString(),
-        errorType: error['type'],
-        details: error,
+        'Server returned a non-JSON error response.',
+        statusCode: response.statusCode,
+      );
+    } catch (e) {
+      return WhatsAppException(
+        'An error occurred while parsing the WhatsApp API response: $e',
+        statusCode: response.statusCode,
       );
     }
-    return WhatsAppException('Unknown error occurred');
+
+    return WhatsAppException(
+      'Server returned an unknown error.',
+      statusCode: response.statusCode,
+    );
   }
 }
 
 class WhatsAppAuthenticationException extends WhatsAppException {
-  WhatsAppAuthenticationException(String message) : super(message, errorType: 'authentication');
+  WhatsAppAuthenticationException(super.message)
+      : super(errorType: 'authentication');
 }
 
 class WhatsAppRateLimitException extends WhatsAppException {
-  WhatsAppRateLimitException(String message) : super(message, errorType: 'rate_limit');
+  WhatsAppRateLimitException(super.message) : super(errorType: 'rate_limit');
 }
 
 class WhatsAppValidationException extends WhatsAppException {
-  WhatsAppValidationException(String message, {Map<String, dynamic>? details}) 
-      : super(message, errorType: 'validation', details: details);
+  WhatsAppValidationException(super.message, {super.details})
+      : super(errorType: 'validation');
 }

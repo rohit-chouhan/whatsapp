@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:whatsapp/utils/exception.dart';
 import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
 class ImageService {
   final String accessToken;
@@ -7,7 +12,7 @@ class ImageService {
 
   ImageService(this.accessToken, this.fromNumberId, this.request);
 
-  Future<Request> sendImageById(
+  Future<WhatsAppResponse> sendImageById(
       String phoneNumber, String mediaId, String? caption) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -26,12 +31,37 @@ class ImageService {
       body['image']['caption'] = caption;
     }
 
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    var url = '$fromNumberId/messages';
+    try {
+      final http.Response response =
+          await request.postWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppResponse parsedResponse =
+            WhatsAppResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 
-  Future<Request> sendImageByUrl(
-      String phoneNumber, String url, String? caption) async {
+  Future<WhatsAppResponse> sendImageByUrl(
+      String phoneNumber, String link, String? caption) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
@@ -42,14 +72,39 @@ class ImageService {
       "recipient_type": "individual",
       "to": phoneNumber,
       "type": "image",
-      "image": {"link": url}
+      "image": {"link": link}
     };
 
     if (caption != null) {
       body['image']['caption'] = caption;
     }
 
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    var url = '$fromNumberId/messages';
+    try {
+      final http.Response response =
+          await request.postWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppResponse parsedResponse =
+            WhatsAppResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 }

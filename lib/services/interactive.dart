@@ -7,7 +7,7 @@ class InteractiveService {
 
   InteractiveService(this.accessToken, this.fromNumberId, this.request);
 
-  Future<Request> sendInteractiveReplayButtons(
+  Future<Request> sendInteractiveReplyButtons(
       String phoneNumber,
       Map<String, dynamic> headerInteractive,
       String bodyText,

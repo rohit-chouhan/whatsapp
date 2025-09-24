@@ -53,7 +53,6 @@ class ContactService {
     if (urls != null) {
       body['contacts'][0]['urls'] = urls;
     }
-
     await request.post('$fromNumberId/messages', headers, body);
     return request;
   }

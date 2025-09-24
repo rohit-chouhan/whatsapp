@@ -12,7 +12,6 @@ import 'package:whatsapp/services/document.dart';
 import 'package:whatsapp/services/image.dart';
 import 'package:whatsapp/services/location.dart';
 import 'package:whatsapp/services/media.dart';
-import 'package:whatsapp/services/message.dart';
 import 'package:whatsapp/services/phone.dart';
 import 'package:whatsapp/services/reaction.dart';
 import 'package:whatsapp/services/registration.dart';
@@ -25,6 +24,11 @@ import 'package:whatsapp/services/flow.dart';
 import 'package:whatsapp/services/catalog.dart';
 import 'package:whatsapp/services/status.dart';
 import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/utils/response/blocked_users_response.dart';
+import 'package:whatsapp/utils/response/media_delete_response.dart';
+import 'package:whatsapp/utils/response/media_get_response.dart';
+import 'package:whatsapp/utils/response/media_upload_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
 class WhatsApp {
   final String _accessToken;
@@ -35,7 +39,6 @@ class WhatsApp {
   late final AudioService _audioService;
   late final DocumentService _documentService;
   late final VideoService _videoService;
-  late final MessageService _messageService;
   late final StickerService _stickerService;
   late final ReactionService _reactionService;
   late final LocationService _locationService;
@@ -60,7 +63,6 @@ class WhatsApp {
     _audioService = AudioService(_accessToken, _fromNumberId, _request);
     _documentService = DocumentService(_accessToken, _fromNumberId, _request);
     _videoService = VideoService(_accessToken, _fromNumberId, _request);
-    _messageService = MessageService(_accessToken, _fromNumberId, _request);
     _stickerService = StickerService(_accessToken, _fromNumberId, _request);
     _reactionService = ReactionService(_accessToken, _fromNumberId, _request);
     _locationService = LocationService(_accessToken, _fromNumberId, _request);
@@ -93,11 +95,12 @@ class WhatsApp {
   /// [previewUrl] Whether to include a preview URL in the message (default: false)
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendMessage(
+  Future<WhatsAppResponse> sendMessage(
       {required String phoneNumber,
       required String text,
       bool previewUrl = false}) async {
-    Request res = await _textService.sendMessage(phoneNumber, text, previewUrl);
+    WhatsAppResponse res =
+        await _textService.sendMessage(phoneNumber, text, previewUrl);
     return res;
   }
 
@@ -107,11 +110,11 @@ class WhatsApp {
   /// [caption] The caption for the image (optional)
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendImageById(
+  Future<WhatsAppResponse> sendImageById(
       {required String phoneNumber,
       required String mediaId,
       String? caption}) async {
-    Request res =
+    WhatsAppResponse res =
         await _imageService.sendImageById(phoneNumber, mediaId, caption);
     return res;
   }
@@ -122,11 +125,11 @@ class WhatsApp {
   /// [caption] The caption for the image (optional)
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendImageByUrl(
+  Future<WhatsAppResponse> sendImageByUrl(
       {required String phoneNumber,
       required String imageUrl,
       String? caption}) async {
-    Request res =
+    WhatsAppResponse res =
         await _imageService.sendImageByUrl(phoneNumber, imageUrl, caption);
     return res;
   }
@@ -225,7 +228,7 @@ class WhatsApp {
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
   Future<Request> markAsRead({required String messageId}) async {
-    Request res = await _messageService.markAsRead(messageId);
+    Request res = await _statusService.markAsRead(messageId);
     return res;
   }
 
@@ -397,9 +400,10 @@ class WhatsApp {
   /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
   ///
   /// return String The URL of the uploaded media file
-  Future<Request> uploadMediaFileByUrl(
+  Future<MediaUploadResponse> uploadMediaFileByUrl(
       {required String fileUrl, required String fileType}) async {
-    Request res = await _mediaService.uploadMediaFileByUrl(fileUrl, fileType);
+    MediaUploadResponse res =
+        await _mediaService.uploadMediaFileByUrl(fileUrl, fileType);
     return res;
   }
 
@@ -412,8 +416,8 @@ class WhatsApp {
   /// - getMediaFileSize() - The size of the media file in bytes
   /// - getMediaSha256() - The SHA-256 hash of the media file
 
-  Future<Request> getMedia({required String mediaId}) async {
-    Request res = await _mediaService.getMedia(mediaId);
+  Future<MediaGetResponse> getMedia({required String mediaId}) async {
+    MediaGetResponse res = await _mediaService.getMedia(mediaId);
     return res;
   }
 
@@ -422,8 +426,8 @@ class WhatsApp {
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
   ///
-  Future<Request> deleteMedia({required String mediaId}) async {
-    Request res = await _mediaService.deleteMedia(mediaId);
+  Future<MediaDeleteResponse> deleteMedia({required String mediaId}) async {
+    MediaDeleteResponse res = await _mediaService.deleteMedia(mediaId);
     return res;
   }
 
@@ -583,10 +587,10 @@ class WhatsApp {
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
   Future<Request> sendFlowMessage({
     required String phoneNumber,
-    required String flowToken,
+    String flowToken = 'unused',
     required String flowId,
     required String flowCta,
-    required String flowActionPayload,
+    required Map<String, dynamic> flowActionPayload,
     String? headerText,
     String? bodyText,
     String? footerText,
@@ -615,7 +619,6 @@ class WhatsApp {
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
   Future<Request> sendCatalogMessage({
     required String phoneNumber,
-    required String catalogId,
     required String productRetailerId,
     String? headerText,
     String? bodyText,
@@ -623,7 +626,6 @@ class WhatsApp {
   }) async {
     Request res = await _catalogService.sendCatalogMessage(
       phoneNumber: phoneNumber,
-      catalogId: catalogId,
       productRetailerId: productRetailerId,
       headerText: headerText,
       bodyText: bodyText,
@@ -642,12 +644,15 @@ class WhatsApp {
     required String phoneNumber,
     required String catalogId,
     required String productRetailerId,
+    String? bodyText,
+    String? footerText,
   }) async {
     Request res = await _catalogService.sendProductMessage(
-      phoneNumber: phoneNumber,
-      catalogId: catalogId,
-      productRetailerId: productRetailerId,
-    );
+        phoneNumber: phoneNumber,
+        catalogId: catalogId,
+        productRetailerId: productRetailerId,
+        bodyText: bodyText!,
+        footerText: footerText!);
     return res;
   }
 
@@ -655,19 +660,19 @@ class WhatsApp {
   /// [messageId] The message ID to get status for
   ///
   /// return Request The response object containing the HTTP response code, error message, and message status
-  Future<Request> getMessageStatus(String messageId) async {
-    Request res = await _statusService.getMessageStatus(messageId);
-    return res;
-  }
+  // Future<Request> getMessageStatus({required String messageId}) async {
+  //   Request res = await _statusService.getMessageStatus(messageId);
+  //   return res;
+  // }
 
   /// Mark message as delivered
   /// [messageId] The message ID to mark as delivered
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> markAsDelivered(String messageId) async {
-    Request res = await _statusService.markAsDelivered(messageId);
-    return res;
-  }
+  // Future<Request> markAsDelivered({required String messageId}) async {
+  //   Request res = await _statusService.markAsDelivered(messageId);
+  //   return res;
+  // }
 
   /// Generate direct whatsapp link
   /// [phoneNumber] The phone number with country code to which the whatsapp link will be generated
@@ -690,5 +695,39 @@ class WhatsApp {
   }) {
     return _textService.getLink(phoneNumber, message, shortLink, bold, italic,
         strikethrough, monospace);
+  }
+
+  /// Send Typing Indicator
+  /// [messageId] The message ID to which the typing indicator is related
+  Future<Request> sendTypingIndicator({
+    required String messageId,
+  }) async {
+    Request res = await _statusService.sendTypingIndicator(messageId);
+    return res;
+  }
+
+  /// Block users by their phone numbers or message id
+  /// [users] List of phone numbers with country code to be blocked
+  Future<Request> blockUsers({required List<String>? users}) async {
+    Request res = await _accountService.blockUsers(users);
+    return res;
+  }
+
+  /// Unblock users by their phone numbers or message id
+  /// [users] List of phone numbers with country code to be unblocked
+  Future<Request> unblockUsers({required List<String>? users}) async {
+    Request res = await _accountService.unblockUsers(users);
+    return res;
+  }
+
+  /// Get the list of blocked users
+  /// [limit] The maximum number of blocked users to return (optional)
+  /// [before] A cursor for pagination to get the previous page of results (optional)
+  /// [after] A cursor for pagination to get the next page of results (optional)
+  Future<BlockedUsersResponse> getBlockedUsers(
+      {int? limit, String? before, String? after}) async {
+    BlockedUsersResponse res =
+        (await _accountService.getBlockedUsers(limit, before, after));
+    return res;
   }
 }
