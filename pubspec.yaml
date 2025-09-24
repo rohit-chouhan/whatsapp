@@ -18,14 +18,21 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.8
+  flutter_dotenv: ^6.0.0
+
+flutter:
+  assets:
+    - .env
 
 screenshots:
   - description: "© WhatsApp"
-    path: logo.png
+    path: img/logo.png
 
 topics:
   - whatsapp
   - whatsapp-business
   - whatsapp-api
   - wa
-  - api
+  - meta

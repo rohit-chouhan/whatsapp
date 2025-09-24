@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:whatsapp/utils/exception.dart';
 import 'package:whatsapp/utils/request.dart';
-import 'package:whatsapp/utils/response/blocked_users_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_blocked_users_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_get_blocked_users_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:whatsapp/utils/response/whatsapp_success_response.dart';
 
 class AccountService {
   final String accessToken;
@@ -12,8 +14,15 @@ class AccountService {
 
   AccountService(this.accessToken, this.fromNumberId, this.request);
 
-  Future<Request> accountMigrationRegister(
-      digitPin, password, backupData) async {
+  /// Registers the number for use with Cloud API after performing backup.
+  ///
+  /// [digitPin] The digits PIN for the number.
+  /// [password] The password for the number.
+  /// [backupData] The backup data for the number.
+  ///
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the registration was successful.
+  Future<WhatsAppSuccessResponse> accountMigrationRegister(
+      String digitPin, String password, String backupData) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
@@ -25,11 +34,41 @@ class AccountService {
       "backup": {"password": password, "data": backupData}
     };
 
-    await request.post('$fromNumberId/register', headers, body);
-    return request;
+    var url = '$fromNumberId/register';
+    try {
+      final http.Response response =
+          await request.postWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppSuccessResponse parsedResponse =
+            WhatsAppSuccessResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 
-  Future<Request> blockUsers(List<String>? users) async {
+  /// Blocks users by their phone numbers.
+  ///
+  /// [users] List of phone numbers with country code to be blocked.
+  ///
+  /// Returns a [WhatsAppBlockedUsersResponse] containing the result of the block operation.
+  Future<WhatsAppBlockedUsersResponse> blockUsers(List<String>? users) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
@@ -44,30 +83,92 @@ class AccountService {
       "block_users": blockUsers
     };
 
-    await request.post('$fromNumberId/block_users', headers, body);
-    return request;
+    var url = '$fromNumberId/block_users';
+    try {
+      final http.Response response =
+          await request.postWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppBlockedUsersResponse parsedResponse =
+            WhatsAppBlockedUsersResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 
-  Future<Request> unblockUsers(List<String>? users) async {
+  /// Unblocks users by their phone numbers.
+  ///
+  /// [users] List of phone numbers with country code to be unblocked.
+  ///
+  /// Returns a [WhatsAppBlockedUsersResponse] containing the result of the unblock operation.
+  Future<WhatsAppBlockedUsersResponse> unblockUsers(List<String>? users) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
     };
-    var blockUsers = users
+    var unblockUsers = users
         ?.map((user) => {
               "user": user,
             })
         .toList();
     final Map<String, dynamic> body = {
       "messaging_product": "whatsapp",
-      "block_users": blockUsers
+      "block_users": unblockUsers
     };
 
-    await request.delete('$fromNumberId/block_users', headers, body);
-    return request;
+    var url = '$fromNumberId/block_users';
+    try {
+      final http.Response response =
+          await request.deleteWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppBlockedUsersResponse parsedResponse =
+            WhatsAppBlockedUsersResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 
-  Future<BlockedUsersResponse> getBlockedUsers(
+  /// Gets the list of blocked users.
+  ///
+  /// [limit] The maximum number of blocked users to return (optional).
+  /// [before] A cursor for pagination to get the previous page of results (optional).
+  /// [after] A cursor for pagination to get the next page of results (optional).
+  ///
+  /// Returns a [WhatsAppGetBlockedUsersResponse] containing the list of blocked users and pagination cursors.
+  Future<WhatsAppGetBlockedUsersResponse> getBlockedUsers(
       int? limit, String? before, String? after) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -78,7 +179,7 @@ class AccountService {
 
     List<String> queryParams = [];
 
-    if (limit != 0) {
+    if (limit != null && limit != 0) {
       queryParams.add('limit=$limit');
     }
     if (before != null && before.isNotEmpty) {
@@ -99,8 +200,8 @@ class AccountService {
       if (response.statusCode == 200) {
         // Here's where you parse the data explicitly
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        final BlockedUsersResponse parsedResponse =
-            BlockedUsersResponse.fromJson(responseBody);
+        final WhatsAppGetBlockedUsersResponse parsedResponse =
+            WhatsAppGetBlockedUsersResponse.fromJson(responseBody);
         return parsedResponse;
       } else {
         throw WhatsAppException(

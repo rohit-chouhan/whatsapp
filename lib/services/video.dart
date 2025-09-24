@@ -1,55 +1,36 @@
-import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/services/base_service.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
-class VideoService {
-  final String accessToken;
-  final String fromNumberId;
-  final Request request;
+class VideoService extends BaseService {
+  VideoService(super.accessToken, super.fromNumberId, super.request);
 
-  VideoService(this.accessToken, this.fromNumberId, this.request);
-
-  Future<Request> sendVideoById(
+  Future<WhatsAppResponse> sendVideoById(
       String phoneNumber, String mediaId, String? caption) async {
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $accessToken',
-    };
-
-    final Map<String, dynamic> body = {
-      "messaging_product": "whatsapp",
-      "recipient_type": "individual",
-      "to": phoneNumber,
-      "type": "video",
-      "video": {"id": mediaId}
-    };
-
+    final videoContent = {'id': mediaId};
     if (caption != null) {
-      body['video']['caption'] = caption;
+      videoContent['caption'] = caption;
     }
 
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    final body = createMessageBody('video', phoneNumber, videoContent);
+
+    return executeApiCall(
+      () => request.postWithResponse('$fromNumberId/messages', headers, body),
+      (json) => WhatsAppResponse.fromJson(json),
+    );
   }
 
-  Future<Request> sendVideoByUrl(
-      String phoneNumber, String url, String? caption) async {
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $accessToken',
-    };
-
-    final Map<String, dynamic> body = {
-      "messaging_product": "whatsapp",
-      "recipient_type": "individual",
-      "to": phoneNumber,
-      "type": "video",
-      "video": {"link": url}
-    };
-
+  Future<WhatsAppResponse> sendVideoByUrl(
+      String phoneNumber, String link, String? caption) async {
+    final videoContent = {'link': link};
     if (caption != null) {
-      body['video']['caption'] = caption;
+      videoContent['caption'] = caption;
     }
 
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    final body = createMessageBody('video', phoneNumber, videoContent);
+
+    return executeApiCall(
+      () => request.postWithResponse('$fromNumberId/messages', headers, body),
+      (json) => WhatsAppResponse.fromJson(json),
+    );
   }
 }

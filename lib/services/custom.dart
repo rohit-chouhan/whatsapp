@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:whatsapp/utils/exception.dart';
 import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
 class CustomService {
   final String accessToken;
@@ -7,7 +12,7 @@ class CustomService {
 
   CustomService(this.accessToken, this.fromNumberId, this.request);
 
-  Future<Request> sendCustomRequest(
+  Future<WhatsAppResponse> sendCustomRequest(
       String path, Map<String, dynamic> payload) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -16,7 +21,32 @@ class CustomService {
 
     final Map<String, dynamic> body = payload;
 
-    await request.post('$fromNumberId$path', headers, body);
-    return request;
+    var url = '$fromNumberId$path';
+    try {
+      final http.Response response =
+          await request.postWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppResponse parsedResponse =
+            WhatsAppResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 }

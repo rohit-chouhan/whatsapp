@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:whatsapp/utils/exception.dart';
 import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
 class CatalogService {
   final String accessToken;
@@ -15,7 +20,7 @@ class CatalogService {
   /// [footerText] The footer text for the catalog message (optional)
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendCatalogMessage({
+  Future<WhatsAppResponse> sendCatalogMessage({
     required String phoneNumber,
     required String productRetailerId,
     String? headerText,
@@ -61,8 +66,33 @@ class CatalogService {
       body["interactive"].remove("footer");
     }
 
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    var url = '$fromNumberId/messages';
+    try {
+      final http.Response response =
+          await request.postWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppResponse parsedResponse =
+            WhatsAppResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 
   /// Send a product message to the specified phone number
@@ -71,7 +101,7 @@ class CatalogService {
   /// [productRetailerId] The product retailer ID for the product message
   ///
   /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendProductMessage(
+  Future<WhatsAppResponse> sendProductMessage(
       {required String phoneNumber,
       required String catalogId,
       required String productRetailerId,
@@ -104,7 +134,32 @@ class CatalogService {
       body["interactive"]["footer"] = {"text": footerText};
     }
 
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    var url = '$fromNumberId/messages';
+    try {
+      final http.Response response =
+          await request.postWithResponse(url, headers, body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final WhatsAppResponse parsedResponse =
+            WhatsAppResponse.fromJson(responseBody);
+        return parsedResponse;
+      } else {
+        // Throw a more specific exception using the factory constructor
+        throw WhatsAppException.fromResponse(response);
+      }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
+    } catch (e) {
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
+    }
   }
 }

@@ -1,27 +1,29 @@
-import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/services/base_service.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
-class StickerService {
-  final String accessToken;
-  final String fromNumberId;
-  final Request request;
+class StickerService extends BaseService {
+  StickerService(super.accessToken, super.fromNumberId, super.request);
 
-  StickerService(this.accessToken, this.fromNumberId, this.request);
+  Future<WhatsAppResponse> sendStickerById(
+      String phoneNumber, String mediaId) async {
+    final stickerContent = {'id': mediaId};
 
-  Future<Request> sendSticker(String phoneNumber, String mediaId) async {
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $accessToken',
-    };
+    final body = createMessageBody('sticker', phoneNumber, stickerContent);
 
-    final Map<String, dynamic> body = {
-      "messaging_product": "whatsapp",
-      "recipient_type": "individual",
-      "to": phoneNumber,
-      "type": "sticker",
-      "sticker": {"id": mediaId}
-    };
+    return executeApiCall(
+      () => request.postWithResponse('$fromNumberId/messages', headers, body),
+      (json) => WhatsAppResponse.fromJson(json),
+    );
+  }
 
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+  Future<WhatsAppResponse> sendStickerByUrl(
+      String phoneNumber, String link) async {
+    final stickerContent = {'link': link};
+    final body = createMessageBody('sticker', phoneNumber, stickerContent);
+
+    return executeApiCall(
+      () => request.postWithResponse('$fromNumberId/messages', headers, body),
+      (json) => WhatsAppResponse.fromJson(json),
+    );
   }
 }

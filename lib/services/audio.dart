@@ -1,45 +1,24 @@
-import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/services/base_service.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
-class AudioService {
-  final String accessToken;
-  final String fromNumberId;
-  final Request request;
+class AudioService extends BaseService {
+  AudioService(super.accessToken, super.fromNumberId, super.request);
 
-  AudioService(this.accessToken, this.fromNumberId, this.request);
+  Future<WhatsAppResponse> sendAudioById(String phoneNumber, String mediaId) async {
+    final body = createMessageBody('audio', phoneNumber, {'id': mediaId});
 
-  Future<Request> sendAudioById(String phoneNumber, String mediaId) async {
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $accessToken',
-    };
-
-    final Map<String, dynamic> body = {
-      "messaging_product": "whatsapp",
-      "recipient_type": "individual",
-      "to": phoneNumber,
-      "type": "audio",
-      "audio": {"id": mediaId}
-    };
-
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    return executeApiCall(
+      () => request.postWithResponse('$fromNumberId/messages', headers, body),
+      (json) => WhatsAppResponse.fromJson(json),
+    );
   }
 
-  Future<Request> sendAudioByUrl(String phoneNumber, String url) async {
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $accessToken',
-    };
+  Future<WhatsAppResponse> sendAudioByUrl(String phoneNumber, String link) async {
+    final body = createMessageBody('audio', phoneNumber, {'link': link});
 
-    final Map<String, dynamic> body = {
-      "messaging_product": "whatsapp",
-      "recipient_type": "individual",
-      "to": phoneNumber,
-      "type": "audio",
-      "audio": {"link": url}
-    };
-
-    await request.post('$fromNumberId/messages', headers, body);
-    return request;
+    return executeApiCall(
+      () => request.postWithResponse('$fromNumberId/messages', headers, body),
+      (json) => WhatsAppResponse.fromJson(json),
+    );
   }
 }

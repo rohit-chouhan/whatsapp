@@ -24,84 +24,117 @@ import 'package:whatsapp/services/flow.dart';
 import 'package:whatsapp/services/catalog.dart';
 import 'package:whatsapp/services/status.dart';
 import 'package:whatsapp/utils/request.dart';
-import 'package:whatsapp/utils/response/blocked_users_response.dart';
-import 'package:whatsapp/utils/response/media_delete_response.dart';
-import 'package:whatsapp/utils/response/media_get_response.dart';
-import 'package:whatsapp/utils/response/media_upload_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_blocked_users_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_get_blocked_users_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_media_delete_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_media_get_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_media_upload_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_business_account_response.dart';
 import 'package:whatsapp/utils/response/whatsapp_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_success_response.dart';
 
+/// High-level client for WhatsApp Cloud API.
+///
+/// This class aggregates all feature-specific services and exposes
+/// convenient methods while preserving each service's parameters and
+/// behavior. It does not alter service method signatures; it only
+/// orchestrates calls and returns parsed response objects.
 class WhatsApp {
   final String _accessToken;
   final String _fromNumberId;
   late final Request _request;
-  late final TextService _textService;
-  late final ImageService _imageService;
-  late final AudioService _audioService;
-  late final DocumentService _documentService;
-  late final VideoService _videoService;
-  late final StickerService _stickerService;
-  late final ReactionService _reactionService;
-  late final LocationService _locationService;
-  late final InteractiveService _interactiveService;
-  late final ContactService _contactService;
-  late final MediaService _mediaService;
-  late final AccountService _accountService;
-  late final BusinessService _businessService;
-  late final PhoneService _phoneService;
-  late final RegistrationService _registrationService;
-  late final ReplyService _replyService;
-  late final TemplateService _templateService;
-  late final CustomService _customService;
-  late final FlowService _flowService;
-  late final CatalogService _catalogService;
-  late final StatusService _statusService;
+  TextService? _textService;
+  ImageService? _imageService;
+  AudioService? _audioService;
+  DocumentService? _documentService;
+  VideoService? _videoService;
+  StickerService? _stickerService;
+  ReactionService? _reactionService;
+  LocationService? _locationService;
+  InteractiveService? _interactiveService;
+  ContactService? _contactService;
+  MediaService? _mediaService;
+  AccountService? _accountService;
+  BusinessService? _businessService;
+  PhoneService? _phoneService;
+  RegistrationService? _registrationService;
+  ReplyService? _replyService;
+  TemplateService? _templateService;
+  CustomService? _customService;
+  FlowService? _flowService;
+  CatalogService? _catalogService;
+  StatusService? _statusService;
 
-  WhatsApp(this._accessToken, this._fromNumberId) {
-    _request = Request();
-    _textService = TextService(_accessToken, _fromNumberId, _request);
-    _imageService = ImageService(_accessToken, _fromNumberId, _request);
-    _audioService = AudioService(_accessToken, _fromNumberId, _request);
-    _documentService = DocumentService(_accessToken, _fromNumberId, _request);
-    _videoService = VideoService(_accessToken, _fromNumberId, _request);
-    _stickerService = StickerService(_accessToken, _fromNumberId, _request);
-    _reactionService = ReactionService(_accessToken, _fromNumberId, _request);
-    _locationService = LocationService(_accessToken, _fromNumberId, _request);
-    _interactiveService =
-        InteractiveService(_accessToken, _fromNumberId, _request);
-    _contactService = ContactService(_accessToken, _fromNumberId, _request);
-    _mediaService = MediaService(_accessToken, _fromNumberId, _request);
-    _accountService = AccountService(_accessToken, _fromNumberId, _request);
-    _businessService = BusinessService(_accessToken, _fromNumberId, _request);
-    _phoneService = PhoneService(_accessToken, _fromNumberId, _request);
-    _registrationService =
-        RegistrationService(_accessToken, _fromNumberId, _request);
-    _replyService = ReplyService(_accessToken, _fromNumberId, _request);
-    _templateService = TemplateService(_accessToken, _fromNumberId, _request);
-    _customService = CustomService(_accessToken, _fromNumberId, _request);
-    _flowService = FlowService(_accessToken, _fromNumberId, _request);
-    _catalogService = CatalogService(_accessToken, _fromNumberId, _request);
-    _statusService = StatusService(_accessToken, _fromNumberId, _request);
+  /// Create a new WhatsApp client.
+  ///
+  /// [accessToken] is the Cloud API bearer token.
+  /// [fromNumberId] is the sender phone number ID path prefix used in API URLs.
+  /// [request] optional Request instance for dependency injection (used for testing).
+  WhatsApp(this._accessToken, this._fromNumberId, [Request? request]) {
+    _request = request ?? Request();
   }
 
-  /// Method to set custom version of the Facebook Graph API.
-  /// [version] The version of the Facebook Graph API to use ex. v19.0
+  /// Set a custom Facebook Graph API version (e.g. "v19.0").
+  ///
+  /// [version] Graph API version string like "v19.0".
   void setVersion(String version) {
     _request.setVersion(version);
   }
+
+  TextService get _getTextService =>
+      _textService ??= TextService(_accessToken, _fromNumberId, _request);
+  ImageService get _getImageService =>
+      _imageService ??= ImageService(_accessToken, _fromNumberId, _request);
+  AudioService get _getAudioService =>
+      _audioService ??= AudioService(_accessToken, _fromNumberId, _request);
+  DocumentService get _getDocumentService => _documentService ??=
+      DocumentService(_accessToken, _fromNumberId, _request);
+  VideoService get _getVideoService =>
+      _videoService ??= VideoService(_accessToken, _fromNumberId, _request);
+  StickerService get _getStickerService =>
+      _stickerService ??= StickerService(_accessToken, _fromNumberId, _request);
+  ReactionService get _getReactionService => _reactionService ??=
+      ReactionService(_accessToken, _fromNumberId, _request);
+  LocationService get _getLocationService => _locationService ??=
+      LocationService(_accessToken, _fromNumberId, _request);
+  InteractiveService get _getInteractiveService => _interactiveService ??=
+      InteractiveService(_accessToken, _fromNumberId, _request);
+  ContactService get _getContactService =>
+      _contactService ??= ContactService(_accessToken, _fromNumberId, _request);
+  MediaService get _getMediaService =>
+      _mediaService ??= MediaService(_accessToken, _fromNumberId, _request);
+  AccountService get _getAccountService =>
+      _accountService ??= AccountService(_accessToken, _fromNumberId, _request);
+  BusinessService get _getBusinessService => _businessService ??=
+      BusinessService(_accessToken, _fromNumberId, _request);
+  PhoneService get _getPhoneService =>
+      _phoneService ??= PhoneService(_accessToken, _fromNumberId, _request);
+  RegistrationService get _getRegistrationService => _registrationService ??=
+      RegistrationService(_accessToken, _fromNumberId, _request);
+  ReplyService get _getReplyService =>
+      _replyService ??= ReplyService(_accessToken, _fromNumberId, _request);
+  TemplateService get _getTemplateService => _templateService ??=
+      TemplateService(_accessToken, _fromNumberId, _request);
+  CustomService get _getCustomService =>
+      _customService ??= CustomService(_accessToken, _fromNumberId, _request);
+  FlowService get _getFlowService =>
+      _flowService ??= FlowService(_accessToken, _fromNumberId, _request);
+  CatalogService get _getCatalogService =>
+      _catalogService ??= CatalogService(_accessToken, _fromNumberId, _request);
+  StatusService get _getStatusService =>
+      _statusService ??= StatusService(_accessToken, _fromNumberId, _request);
 
   /// Send a message to the specified phone number
   /// [phoneNumber] The phone number with country code to which the message will be sent
   /// [text] The text message to be sent
   /// [previewUrl] Whether to include a preview URL in the message (default: false)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the message was sent successfully.
   Future<WhatsAppResponse> sendMessage(
       {required String phoneNumber,
       required String text,
       bool previewUrl = false}) async {
-    WhatsAppResponse res =
-        await _textService.sendMessage(phoneNumber, text, previewUrl);
-    return res;
+    return await _getTextService.sendMessage(phoneNumber, text, previewUrl);
   }
 
   /// Send a message with an image attachment to the specified phone number
@@ -109,14 +142,12 @@ class WhatsApp {
   /// [mediaId] The uploaded image file id to be sent
   /// [caption] The caption for the image (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the image was sent successfully.
   Future<WhatsAppResponse> sendImageById(
       {required String phoneNumber,
       required String mediaId,
       String? caption}) async {
-    WhatsAppResponse res =
-        await _imageService.sendImageById(phoneNumber, mediaId, caption);
-    return res;
+    return await _getImageService.sendImageById(phoneNumber, mediaId, caption);
   }
 
   /// Send a message with an image attachment to the specified phone number
@@ -124,37 +155,33 @@ class WhatsApp {
   /// [imageUrl] The direct URL of the image to be sent
   /// [caption] The caption for the image (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the image was sent successfully.
   Future<WhatsAppResponse> sendImageByUrl(
       {required String phoneNumber,
       required String imageUrl,
       String? caption}) async {
-    WhatsAppResponse res =
-        await _imageService.sendImageByUrl(phoneNumber, imageUrl, caption);
-    return res;
+    return await _getImageService.sendImageByUrl(
+        phoneNumber, imageUrl, caption);
   }
 
   /// Send a message with an audio attachment to the specified phone number using Media Id
   /// [phoneNumber] The phone number with country code to which the message will be sent
   /// [mediaId] The uploaded audio file id to be sent
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendAudioById(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the audio was sent successfully.
+  Future<WhatsAppResponse> sendAudioById(
       {required String phoneNumber, required String mediaId}) async {
-    Request res = await _audioService.sendAudioById(phoneNumber, mediaId);
-    return res;
+    return await _getAudioService.sendAudioById(phoneNumber, mediaId);
   }
 
   /// Send a message with an audio attachment to the specified phone number using URL
   /// [phoneNumber] The phone number with country code to which the message will be sent
   /// [audioUrl] The direct URL of the audio file to be sent
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  ///
-  Future<Request> sendAudioByUrl(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the audio was sent successfully.
+  Future<WhatsAppResponse> sendAudioByUrl(
       {required String phoneNumber, required String audioUrl}) async {
-    Request res = await _audioService.sendAudioByUrl(phoneNumber, audioUrl);
-    return res;
+    return await _getAudioService.sendAudioByUrl(phoneNumber, audioUrl);
   }
 
   /// Send a message with a document attachment to the specified phone number using Media Id
@@ -163,110 +190,112 @@ class WhatsApp {
   /// [caption] The caption for the document (optional)
   /// [filename] The filename for the document (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  ///
-  Future<Request> sendDocumentById(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the document was sent successfully.
+  Future<WhatsAppResponse> sendDocumentById(
       {required String phoneNumber,
       required String mediaId,
       String? caption,
       String? filename}) async {
-    Request res = await _documentService.sendDocumentById(
+    return await _getDocumentService.sendDocumentById(
         phoneNumber, mediaId, caption, filename);
-    return res;
   }
 
-  /// Send a message with a document attachment to the specified phone number using Media Id
+  /// Send a message with a document attachment to the specified phone number using URL
   /// [phoneNumber] The phone number with country code to which the message will be sent
   /// [documentUrl] The direct URL of the document file to be sent
   /// [caption] The caption for the document (optional)
   /// [filename] The filename for the document (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  ///
-  Future<Request> sendDocumentByUrl(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the document was sent successfully.
+  Future<WhatsAppResponse> sendDocumentByUrl(
       {required String phoneNumber,
       required String documentUrl,
       String? caption,
       String? filename}) async {
-    Request res = await _documentService.sendDocumentByUrl(
+    return await _getDocumentService.sendDocumentByUrl(
         phoneNumber, documentUrl, caption, filename);
-    return res;
   }
 
-  /// Send a message with an video attachment to the specified phone number
+  /// Send a message with a video attachment to the specified phone number
   /// [phoneNumber] The phone number with country code to which the message will be sent
   /// [mediaId] The uploaded video file id to be sent
   /// [caption] The caption for the video (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendVideoById(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the video was sent successfully.
+  Future<WhatsAppResponse> sendVideoById(
       {required String phoneNumber,
       required String mediaId,
       String? caption}) async {
-    Request res =
-        await _videoService.sendVideoById(phoneNumber, mediaId, caption);
-    return res;
+    return await _getVideoService.sendVideoById(phoneNumber, mediaId, caption);
   }
 
-  /// Send a message with an video attachment to the specified phone number
+  /// Send a message with a video attachment to the specified phone number
   /// [phoneNumber] The phone number with country code to which the message will be sent
   /// [videoUrl] The direct URL of the video to be sent
   /// [caption] The caption for the video (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendVideoByUrl(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the video was sent successfully.
+  Future<WhatsAppResponse> sendVideoByUrl(
       {required String phoneNumber,
       required String videoUrl,
       String? caption}) async {
-    Request res =
-        await _videoService.sendVideoByUrl(phoneNumber, videoUrl, caption);
-    return res;
+    return await _getVideoService.sendVideoByUrl(
+        phoneNumber, videoUrl, caption);
   }
 
-  /// Read (Seen) the messages received by the specified phone number
+  /// Send a message with a sticker attachment to the specified phone number
+  /// [phoneNumber] The phone number with country code to which the message will be sent
+  /// [stickerUrl] The direct URL of the sticker (webp) to be sent
+  ///
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the video was sent successfully.
+  Future<WhatsAppResponse> sendStickerByUrl({
+    required String phoneNumber,
+    required String stickerUrl,
+  }) async {
+    return await _getStickerService.sendStickerByUrl(phoneNumber, stickerUrl);
+  }
+
+  /// Mark the message as read (seen)
   /// [messageId] The message ID to be marked as read
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> markAsRead({required String messageId}) async {
-    Request res = await _statusService.markAsRead(messageId);
-    return res;
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the message was marked as read successfully.
+  Future<WhatsAppSuccessResponse> markAsRead(
+      {required String messageId}) async {
+    return await _getStatusService.markAsRead(messageId);
   }
 
-  /// Send sticker to the specified phone number
+  /// Send a sticker to the specified phone number
   /// [phoneNumber] The phone number with country code to which the sticker will be sent
   /// [stickerId] The sticker ID to be sent
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendSticker(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the sticker was sent successfully.
+  Future<WhatsAppResponse> sendSticker(
       {required String phoneNumber, required String stickerId}) async {
-    Request res = await _stickerService.sendSticker(phoneNumber, stickerId);
-    return res;
+    return await _getStickerService.sendStickerById(phoneNumber, stickerId);
   }
 
-  /// Reaction to the specified message
-  /// [phoneNumber] The phone number with country code to which the sticker will be sent
+  /// Send a reaction to the specified message
+  /// [phoneNumber] The phone number with country code to which the reaction will be sent
   /// [messageId] The message ID to which the reaction will be sent
   /// [emoji] The emoji to be used for the reaction
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendReaction(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the reaction was sent successfully.
+  Future<WhatsAppResponse> sendReaction(
       {required String phoneNumber,
       required String messageId,
       required String emoji}) async {
-    Request res =
-        await _reactionService.sendReaction(phoneNumber, messageId, emoji);
-    return res;
+    return await _getReactionService.sendReaction(
+        phoneNumber, messageId, emoji);
   }
 
   /// Request a location from the specified phone number
   /// [phoneNumber] The phone number with country code to which the location will be requested
   /// [text] The text message to accompany the location request
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendLocationRequest(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the location request was sent successfully.
+  Future<WhatsAppResponse> sendLocationRequest(
       {required String phoneNumber, required String text}) async {
-    Request res = await _locationService.sendLocationRequest(phoneNumber, text);
-    return res;
+    return await _getLocationService.sendLocationRequest(phoneNumber, text);
   }
 
   /// Send location to specified phone number
@@ -276,17 +305,16 @@ class WhatsApp {
   /// [name] The name of the location (optional)
   /// [address] The address of the location (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the location was sent successfully.
 
-  Future<Request> sendLocation(
+  Future<WhatsAppResponse> sendLocation(
       {required String phoneNumber,
       required double latitude,
       required double longitude,
       String? name,
       String? address}) async {
-    Request res = await _locationService.sendLocation(
+    return await _getLocationService.sendLocation(
         phoneNumber, latitude, longitude, name, address);
-    return res;
   }
 
   /// Send Interactive Reply Button to the specified phone number
@@ -296,65 +324,58 @@ class WhatsApp {
   /// [footerText] The footer text for the interactive reply button
   /// [interactiveReplyButtons] The interactive reply buttons to be sent
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the interactive reply button was sent successfully.
 
-  Future<Request> sendInteractiveReplyButton(
+  Future<WhatsAppResponse> sendInteractiveReplyButton(
       {required String phoneNumber,
       required Map<String, dynamic> headerInteractive,
       required String bodyText,
       required String footerText,
       required List<Map<String, dynamic>> interactiveReplyButtons}) async {
-    Request res = await _interactiveService.sendInteractiveReplyButtons(
-        phoneNumber,
-        headerInteractive,
-        bodyText,
-        footerText,
-        interactiveReplyButtons);
-    return res;
+    return await _getInteractiveService.sendInteractiveReplyButtons(phoneNumber,
+        headerInteractive, bodyText, footerText, interactiveReplyButtons);
   }
 
   /// Send Interactive Lists to the specified phone number
-  /// [phoneNumber] The phone number with country code to which the interactive reply button will be sent
-  /// [headerText] The header text for the interactive reply button (optional)
-  /// [bodyText] The body text for the interactive reply button
-  /// [footerText] The footer text for the interactive reply button (optional)
-  /// [buttonText] The text for the interactive reply button (optional)
+  /// [phoneNumber] The phone number with country code to which the interactive list will be sent
+  /// [headerText] The header text for the interactive list (optional)
+  /// [bodyText] The body text for the interactive list
+  /// [footerText] The footer text for the interactive list (optional)
+  /// [buttonText] The text for the interactive list button
   /// [sections] Sections of interactive lists to be sent
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the interactive list was sent successfully.
 
-  Future<Request> sendInteractiveLists(
+  Future<WhatsAppResponse> sendInteractiveLists(
       {required String phoneNumber,
       String? headerText,
       required String bodyText,
       String? footerText,
       required String buttonText,
       required List<Map<String, dynamic>> sections}) async {
-    Request res = await _interactiveService.sendInteractiveLists(
+    return await _getInteractiveService.sendInteractiveLists(
         phoneNumber, headerText, bodyText, footerText, buttonText, sections);
-    return res;
   }
 
-  /// Send Interactive for Call-To-Action Url to the specified phone number
-  /// [phoneNumber] The phone number with country code to which the interactive reply button will be sent
-  /// [headerText] The header text for the interactive reply button (optional)
-  /// [bodyText] The body text for the interactive reply button
-  /// [footerText] The footer text for the interactive reply button (optional)
-  /// [buttonText] The text for the interactive reply button (optional)
-  /// [actionUrl] Url to open when the interactive reply button is clicked
+  /// Send Interactive Call-To-Action Button to the specified phone number
+  /// [phoneNumber] The phone number with country code to which the call-to-action button will be sent
+  /// [headerText] The header text for the call-to-action button (optional)
+  /// [bodyText] The body text for the call-to-action button
+  /// [footerText] The footer text for the call-to-action button (optional)
+  /// [buttonText] The text for the call-to-action button
+  /// [actionUrl] URL to open when the call-to-action button is clicked
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the call-to-action button was sent successfully.
 
-  Future<Request> sendCallToActionButton(
+  Future<WhatsAppResponse> sendCallToActionButton(
       {required String phoneNumber,
       String? headerText,
       required String bodyText,
       String? footerText,
       required String buttonText,
       required String actionUrl}) async {
-    Request res = await _interactiveService.sendCallToActionButton(
+    return await _getInteractiveService.sendCallToActionButton(
         phoneNumber, headerText, bodyText, footerText, buttonText, actionUrl);
-    return res;
   }
 
   /// Send contact details to the specified phone number
@@ -367,10 +388,9 @@ class WhatsApp {
   /// [phones] List of phone numbers of the contact
   /// [urls] List of URLs of the contact
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  ///
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the contact details were sent successfully.
 
-  Future<Request> sendContactDetails(
+  Future<WhatsAppResponse> sendContactDetails(
       {required String phoneNumber,
       String? dateOfBirth,
       List<Map<dynamic, dynamic>>? addresses,
@@ -379,56 +399,45 @@ class WhatsApp {
       Map<dynamic, dynamic>? organization,
       required List<Map<dynamic, dynamic>> phones,
       List<Map<dynamic, dynamic>>? urls}) async {
-    Request res = await _contactService.sendContactDetails(phoneNumber,
-        dateOfBirth, addresses, emails, person, organization, phones, urls);
-    return res;
+    return await _getContactService.sendContactDetails(phoneNumber, dateOfBirth,
+        addresses, emails, person, organization, phones, urls);
   }
 
   /// Upload media file to business server
   /// [file] The file to be uploaded
   /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
   ///
-  /// return String The URL of the uploaded media file
-  Future<Request> uploadMediaFile(
+  /// Returns a [Request] object with the media ID and response details if the upload was successful.
+  Future<WhatsAppMediaUploadResponse> uploadMediaFile(
       {required File file, required String fileType}) async {
-    Request res = await _mediaService.uploadMediaFile(file, fileType);
-    return res;
+    return await _getMediaService.uploadMediaFile(file, fileType);
   }
 
-  /// Upload media file to business server by Url
-  /// [fileUrl] Public file url
+  /// Upload media file to business server by URL
+  /// [fileUrl] Public file URL
   /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
   ///
-  /// return String The URL of the uploaded media file
-  Future<MediaUploadResponse> uploadMediaFileByUrl(
+  /// Returns a [WhatsAppMediaUploadResponse] containing the media ID if the upload was successful.
+  Future<WhatsAppMediaUploadResponse> uploadMediaFileByUrl(
       {required String fileUrl, required String fileType}) async {
-    MediaUploadResponse res =
-        await _mediaService.uploadMediaFileByUrl(fileUrl, fileType);
-    return res;
+    return await _getMediaService.uploadMediaFileByUrl(fileUrl, fileType);
   }
 
-  /// Get media url and information by media ID
+  /// Get media URL and information by media ID
   /// [mediaId] The media ID of the uploaded file
   ///
-  /// returns -
-  /// - getMediaUrl() - The URL of the media file
-  /// - getMediaMimeType() - The MIME type of the media file (e.g., "image/jpeg")
-  /// - getMediaFileSize() - The size of the media file in bytes
-  /// - getMediaSha256() - The SHA-256 hash of the media file
-
-  Future<MediaGetResponse> getMedia({required String mediaId}) async {
-    MediaGetResponse res = await _mediaService.getMedia(mediaId);
-    return res;
+  /// Returns a [WhatsAppMediaGetResponse] containing the media URL, MIME type, file size, and SHA-256 hash.
+  Future<WhatsAppMediaGetResponse> getMedia({required String mediaId}) async {
+    return await _getMediaService.getMedia(mediaId);
   }
 
   /// Delete media file from business server by media ID
   /// [mediaId] The media ID of the uploaded file
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  ///
-  Future<MediaDeleteResponse> deleteMedia({required String mediaId}) async {
-    MediaDeleteResponse res = await _mediaService.deleteMedia(mediaId);
-    return res;
+  /// Returns a [WhatsAppMediaDeleteResponse] indicating whether the media was deleted successfully.
+  Future<WhatsAppMediaDeleteResponse> deleteMedia(
+      {required String mediaId}) async {
+    return await _getMediaService.deleteMedia(mediaId);
   }
 
   /// Register the number for use with Cloud API after you have performed your backup.
@@ -436,27 +445,25 @@ class WhatsApp {
   /// [password] The password for the number
   /// [backupData] The backup data for the number
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-
-  Future<Request> accountMigrationRegister(
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the account migration was registered successfully.
+  Future<WhatsAppSuccessResponse> accountMigrationRegister(
       {required String digitsPinCode,
       required String password,
       required String backupData}) async {
-    Request res = await _accountService.accountMigrationRegister(
+    return await _getAccountService.accountMigrationRegister(
         digitsPinCode, password, backupData);
-    return res;
   }
 
-  /// Get business details
+  /// Get business profile details
   /// [scope] The scope of the business details (e.g. ["name", "email"]) (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> getBusinessProfile({List<String>? scope}) async {
-    Request res = await _businessService.getBusinessProfile(scope);
-    return res;
+  /// Returns a [WhatsAppBusinessAccountResponse] containing the business profile details.
+  Future<WhatsAppBusinessAccountResponse> getBusinessProfile(
+      {List<String>? scope}) async {
+    return await _getBusinessService.getBusinessProfile(scope);
   }
 
-  /// Update business details
+  /// Update business profile details
   /// [about] The about section of the business profile (optional)
   /// [address] The address section of the business profile (optional)
   /// [description] The description section of the business profile (optional)
@@ -465,8 +472,8 @@ class WhatsApp {
   /// [websites] The websites section of the business profile (optional)
   /// [profilePictureHandle] The profile picture handle of the business profile (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> updateBusinessProfile({
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the business profile was updated successfully.
+  Future<WhatsAppSuccessResponse> updateBusinessProfile({
     String? about,
     String? address,
     String? description,
@@ -475,28 +482,26 @@ class WhatsApp {
     List<String>? websites,
     String? profilePictureHandle,
   }) async {
-    Request res = await _businessService.updateBusinessProfile(about, address,
+    return await _getBusinessService.updateBusinessProfile(about, address,
         description, industry, email, websites, profilePictureHandle);
-    return res;
   }
 
   /// Send a verification code to the specified phone number
   /// [codeMethod] The code method, default is SMS (e.g., "SMS", "VOICE")
   /// [language] The language code for the verification code, default is en (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> requestCode({String? codeMethod, String? language}) async {
-    Request res = await _phoneService.requestCode(codeMethod, language);
-    return res;
+  /// Returns a [WhatsAppResponse] containing the response details if the code request was successful.
+  Future<WhatsAppResponse> requestCode(
+      {String? codeMethod, String? language}) async {
+    return await _getPhoneService.requestCode(codeMethod, language);
   }
 
   /// Verify the verification code sent to the specified phone number
   /// [code] The verification code received from the phone number
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> verifyCode({int? code}) async {
-    Request res = await _phoneService.verifyCode(code!);
-    return res;
+  /// Returns a [WhatsAppResponse] containing the response details if the code verification was successful.
+  Future<WhatsAppResponse> verifyCode({required int code}) async {
+    return await _getPhoneService.verifyCode(code);
   }
 
   /// Register your business phone number
@@ -504,22 +509,20 @@ class WhatsApp {
   /// [enableLocalStorage] Enable local storage for the new phone number (optional)
   /// [dataLocalizationRegion] The data localization region for the new phone number (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> register(
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the phone number was registered successfully.
+  Future<WhatsAppSuccessResponse> register(
       {required int pin,
       bool? enableLocalStorage,
       String? dataLocalizationRegion}) async {
-    Request res = await _registrationService.register(
+    return await _getRegistrationService.register(
         pin, enableLocalStorage, dataLocalizationRegion);
-    return res;
   }
 
   /// De-register your business phone number
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> deRegister() async {
-    Request res = await _registrationService.deRegister();
-    return res;
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the phone number was deregistered successfully.
+  Future<WhatsAppSuccessResponse> deRegister() async {
+    return await _getRegistrationService.deRegister();
   }
 
   /// Send a reply message to the message
@@ -528,13 +531,12 @@ class WhatsApp {
   /// [messageId] The message ID of the message to be replied to
   /// [reply] The reply message content
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> reply(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the reply was sent successfully.
+  Future<WhatsAppResponse> reply(
       {required String phoneNumber,
       required String messageId,
       required Map<String, dynamic> reply}) async {
-    Request res = await _replyService.reply(phoneNumber, messageId, reply);
-    return res;
+    return await _getReplyService.reply(phoneNumber, messageId, reply);
   }
 
   /// Send a template message to the specified phone number
@@ -543,35 +545,33 @@ class WhatsApp {
   /// [language] The language code for the template message
   /// [placeholder] The placeholder values for the template message (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendTemplate(
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the template was sent successfully.
+  Future<WhatsAppResponse> sendTemplate(
       {required String phoneNumber,
       required String template,
       required String language,
       List<Map<String, dynamic>>? placeholder}) async {
-    Request res = await _templateService.sendTemplate(
+    return await _getTemplateService.sendTemplate(
         phoneNumber, template, language, placeholder);
-    return res;
   }
 
-  /// Two Step Verification for phone number registration
+  /// Set Two Step Verification for phone number registration
   /// [pin] The PIN for the two-step verification
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> twoStepVerification({required int pin}) async {
-    Request res = await _registrationService.twoStepVerification(pin);
-    return res;
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the two-step verification was set successfully.
+  Future<WhatsAppSuccessResponse> twoStepVerification(
+      {required int pin}) async {
+    return await _getRegistrationService.twoStepVerification(pin);
   }
 
   /// Send your own Business API request
   /// [path] The path of the API endpoint (e.g., "/messages")
   /// [payload] The payload of the API request (e.g., {"message": "Hello, World"})
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendCustomRequest(
+  /// Returns a [WhatsAppResponse] containing the response details if the custom request was successful.
+  Future<WhatsAppResponse> sendCustomRequest(
       {required String path, required Map<String, dynamic> payload}) async {
-    Request res = await _customService.sendCustomRequest(path, payload);
-    return res;
+    return await _getCustomService.sendCustomRequest(path, payload);
   }
 
   /// Send a Flow message to the specified phone number
@@ -584,8 +584,8 @@ class WhatsApp {
   /// [bodyText] The body text for the flow message (optional)
   /// [footerText] The footer text for the flow message (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendFlowMessage({
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the flow message was sent successfully.
+  Future<WhatsAppResponse> sendFlowMessage({
     required String phoneNumber,
     String flowToken = 'unused',
     required String flowId,
@@ -595,7 +595,7 @@ class WhatsApp {
     String? bodyText,
     String? footerText,
   }) async {
-    Request res = await _flowService.sendFlowMessage(
+    return await _getFlowService.sendFlowMessage(
       phoneNumber: phoneNumber,
       flowToken: flowToken,
       flowId: flowId,
@@ -605,85 +605,65 @@ class WhatsApp {
       bodyText: bodyText,
       footerText: footerText,
     );
-    return res;
   }
 
   /// Send a catalog message to the specified phone number
   /// [phoneNumber] The phone number with country code to which the catalog message will be sent
-  /// [catalogId] The catalog ID for the catalog message
   /// [productRetailerId] The product retailer ID for the catalog message
   /// [headerText] The header text for the catalog message (optional)
   /// [bodyText] The body text for the catalog message (optional)
   /// [footerText] The footer text for the catalog message (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendCatalogMessage({
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the catalog message was sent successfully.
+  Future<WhatsAppResponse> sendCatalogMessage({
     required String phoneNumber,
     required String productRetailerId,
     String? headerText,
     String? bodyText,
     String? footerText,
   }) async {
-    Request res = await _catalogService.sendCatalogMessage(
+    return await _getCatalogService.sendCatalogMessage(
       phoneNumber: phoneNumber,
       productRetailerId: productRetailerId,
       headerText: headerText,
       bodyText: bodyText,
       footerText: footerText,
     );
-    return res;
   }
 
   /// Send a product message to the specified phone number
   /// [phoneNumber] The phone number with country code to which the product message will be sent
   /// [catalogId] The catalog ID for the product message
   /// [productRetailerId] The product retailer ID for the product message
+  /// [bodyText] The body text for the product message (optional)
+  /// [footerText] The footer text for the product message (optional)
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  Future<Request> sendProductMessage({
+  /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the product message was sent successfully.
+  Future<WhatsAppResponse> sendProductMessage({
     required String phoneNumber,
     required String catalogId,
     required String productRetailerId,
     String? bodyText,
     String? footerText,
   }) async {
-    Request res = await _catalogService.sendProductMessage(
+    return await _getCatalogService.sendProductMessage(
         phoneNumber: phoneNumber,
         catalogId: catalogId,
         productRetailerId: productRetailerId,
-        bodyText: bodyText!,
-        footerText: footerText!);
-    return res;
+        bodyText: bodyText,
+        footerText: footerText);
   }
 
-  /// Get message status by message ID
-  /// [messageId] The message ID to get status for
-  ///
-  /// return Request The response object containing the HTTP response code, error message, and message status
-  // Future<Request> getMessageStatus({required String messageId}) async {
-  //   Request res = await _statusService.getMessageStatus(messageId);
-  //   return res;
-  // }
-
-  /// Mark message as delivered
-  /// [messageId] The message ID to mark as delivered
-  ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
-  // Future<Request> markAsDelivered({required String messageId}) async {
-  //   Request res = await _statusService.markAsDelivered(messageId);
-  //   return res;
-  // }
-
-  /// Generate direct whatsapp link
-  /// [phoneNumber] The phone number with country code to which the whatsapp link will be generated
-  /// [message] The message content for the whatsapp link (optional)
+  /// Generate direct WhatsApp link
+  /// [phoneNumber] The phone number with country code to which the WhatsApp link will be generated
+  /// [message] The message content for the WhatsApp link (optional)
   /// [shortLink] Generate a shortened link (optional)
   /// [bold] Add bold formatting to the message (optional)
   /// [italic] Add italic formatting to the message (optional)
   /// [strikethrough] Add strikethrough formatting to the message (optional)
   /// [monospace] Add monospace formatting to the message (optional)
   ///
-  /// Return The generated whatsapp message link
+  /// Returns the generated WhatsApp message link as a string.
   String getLink({
     required String phoneNumber,
     String? message,
@@ -693,41 +673,46 @@ class WhatsApp {
     List<String>? strikethrough,
     List<String>? monospace,
   }) {
-    return _textService.getLink(phoneNumber, message, shortLink, bold, italic,
-        strikethrough, monospace);
+    return _getTextService.getLink(phoneNumber, message, shortLink, bold,
+        italic, strikethrough, monospace);
   }
 
   /// Send Typing Indicator
   /// [messageId] The message ID to which the typing indicator is related
-  Future<Request> sendTypingIndicator({
+  ///
+  /// Returns a [WhatsAppSuccessResponse] indicating whether the typing indicator was sent successfully.
+  Future<WhatsAppSuccessResponse> sendTypingIndicator({
     required String messageId,
   }) async {
-    Request res = await _statusService.sendTypingIndicator(messageId);
-    return res;
+    return await _getStatusService.sendTypingIndicator(messageId);
   }
 
-  /// Block users by their phone numbers or message id
+  /// Block users by their phone numbers
   /// [users] List of phone numbers with country code to be blocked
-  Future<Request> blockUsers({required List<String>? users}) async {
-    Request res = await _accountService.blockUsers(users);
-    return res;
+  ///
+  /// Returns a [WhatsAppBlockedUsersResponse] containing the result of the block operation.
+  Future<WhatsAppBlockedUsersResponse> blockUsers(
+      {required List<String>? users}) async {
+    return await _getAccountService.blockUsers(users);
   }
 
-  /// Unblock users by their phone numbers or message id
+  /// Unblock users by their phone numbers
   /// [users] List of phone numbers with country code to be unblocked
-  Future<Request> unblockUsers({required List<String>? users}) async {
-    Request res = await _accountService.unblockUsers(users);
-    return res;
+  ///
+  /// Returns a [WhatsAppBlockedUsersResponse] containing the result of the unblock operation.
+  Future<WhatsAppBlockedUsersResponse> unblockUsers(
+      {required List<String>? users}) async {
+    return await _getAccountService.unblockUsers(users);
   }
 
   /// Get the list of blocked users
   /// [limit] The maximum number of blocked users to return (optional)
   /// [before] A cursor for pagination to get the previous page of results (optional)
   /// [after] A cursor for pagination to get the next page of results (optional)
-  Future<BlockedUsersResponse> getBlockedUsers(
+  ///
+  /// Returns a [WhatsAppGetBlockedUsersResponse] containing the list of blocked users and pagination cursors.
+  Future<WhatsAppGetBlockedUsersResponse> getBlockedUsers(
       {int? limit, String? before, String? after}) async {
-    BlockedUsersResponse res =
-        (await _accountService.getBlockedUsers(limit, before, after));
-    return res;
+    return await _getAccountService.getBlockedUsers(limit, before, after);
   }
 }

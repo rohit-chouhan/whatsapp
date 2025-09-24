@@ -1,31 +1,22 @@
-import 'package:whatsapp/utils/request.dart';
+import 'package:whatsapp/services/base_service.dart';
+import 'package:whatsapp/utils/response/whatsapp_response.dart';
 
-class ReplyService {
-  final String accessToken;
-  final String fromNumberId;
-  final Request request;
+class ReplyService extends BaseService {
+  ReplyService(super.accessToken, super.fromNumberId, super.request);
 
-  ReplyService(this.accessToken, this.fromNumberId, this.request);
-
-  Future<Request> reply(String phoneNumber, String messageId, Map<String, dynamic> reply) async {
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $accessToken',
-    };
-
+  Future<WhatsAppResponse> reply(
+      String phoneNumber, String messageId, Map<String, dynamic> reply) async {
     final Map<String, dynamic> body = {
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
       "to": phoneNumber,
-      "context": {"message_id": messageId}
-    };
-
-    final Map<String, dynamic> mergedMap = {
-      ...body,
+      "context": {"message_id": messageId},
       ...reply,
     };
 
-    await request.post('$fromNumberId/messages', headers, mergedMap);
-    return request;
+    return executeApiCall(
+      () => request.postWithResponse('$fromNumberId/messages', headers, body),
+      (json) => WhatsAppResponse.fromJson(json),
+    );
   }
 }

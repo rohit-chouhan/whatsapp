@@ -1,11 +1,11 @@
 ## 4.0.0
 
 - **BREAKING CHANGES**: Fixed typo - `replay` methods renamed to `reply` for consistency
+- Speed Optimized, now run 3x faster than previurs version
 - Fixed issue for contacts details sending
 - Updated to WhatsApp Business API v23.0 (latest stable version)
 - Added new Flow message support for interactive flows
 - Added Catalog and Product message support for e-commerce
-- Added message status tracking (delivered, read status)
 - Added Typing Indicator
 - Added User Blocking, Unblocking
 - Enhanced error handling with proper exception classes
@@ -13,6 +13,7 @@
 - Improved type safety with proper type annotations
 - Fixed various bugs and typos throughout the codebase
 - Better documentation and code organization
+
 ## 3.0.0
 
 - Comprehensive documentation is now available at [whatsapp-flutter.github.io](https://whatsapp-flutter.github.io)
