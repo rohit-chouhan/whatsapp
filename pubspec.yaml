@@ -5,8 +5,8 @@ homepage: https://rohitchouhan.com
 repository: https://github.com/rohit-chouhan/whatsapp
 
 environment:
-  sdk: ">=2.17.1 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:

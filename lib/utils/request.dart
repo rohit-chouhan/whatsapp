@@ -105,18 +105,6 @@ class Request {
     }
   }
 
-  Future<void> post(String endpoint, Map<String, String> headers,
-      Map<String, dynamic>? body) async {
-    _clearState();
-
-    try {
-      final http.Response res = await _performPost(endpoint, headers, body);
-      _parseResponse(res.body, res.statusCode);
-    } catch (e) {
-      error = e.toString();
-      errorMessage = 'Request failed: $e';
-    }
-  }
 
   Future<http.Response> postWithResponse(
     String endpoint,
@@ -149,18 +137,6 @@ class Request {
     return await http.Response.fromStream(streamedResponse);
   }
 
-  Future<void> postForm(String endpoint, Map<String, String> headers,
-      Map<String, String> body) async {
-    _clearState();
-
-    try {
-      final http.Response res = await _performPostForm(endpoint, headers, body);
-      _parseResponse(res.body, res.statusCode);
-    } catch (e) {
-      error = e.toString();
-      errorMessage = 'Multipart request failed: $e';
-    }
-  }
 
   Future<http.Response> postFormWithResponse(
     String endpoint,
@@ -186,17 +162,6 @@ class Request {
     return await http.get(uri, headers: headers);
   }
 
-  Future<void> get(String endpoint, Map<String, String> headers) async {
-    _clearState();
-
-    try {
-      final http.Response res = await _performGet(endpoint, headers);
-      _parseResponse(res.body, res.statusCode);
-    } catch (e) {
-      error = e.toString();
-      errorMessage = 'GET request failed: $e';
-    }
-  }
 
   Future<http.Response> getWithResponse(
       String endpoint, Map<String, String> headers) async {
@@ -228,18 +193,6 @@ class Request {
     }
   }
 
-  Future<void> delete(String endpoint, Map<String, String> headers,
-      Map<String, dynamic>? body) async {
-    _clearState();
-
-    try {
-      final http.Response res = await _performDelete(endpoint, headers, body);
-      _parseResponse(res.body, res.statusCode);
-    } catch (e) {
-      error = e.toString();
-      errorMessage = 'DELETE request failed: $e';
-    }
-  }
 
   Future<http.Response> deleteWithResponse(
     String endpoint,

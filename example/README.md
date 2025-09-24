@@ -1,16 +1,33 @@
-# example
+# WhatsApp Package Example
 
-A new Flutter project.
+This is an example Flutter application demonstrating the usage of the WhatsApp Cloud API package.
+
+## Features
+
+- Generate WhatsApp share links
+- Test sending text messages (requires valid API credentials)
+- Test uploading media files by URL (requires valid API credentials)
+- Interactive UI for testing package functionality
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Clone the repository and navigate to the example directory.
+2. Run `flutter pub get` to install dependencies.
+3. Update the access token and from number ID in the app with your WhatsApp Cloud API credentials.
+4. Run the app with `flutter run`.
 
-A few resources to get you started if this is your first Flutter project:
+## Usage
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Enter your WhatsApp Cloud API access token and from number ID.
+- Input a phone number and message.
+- Input a media URL for testing uploads.
+- Use "Generate WhatsApp Link" to create a shareable link.
+- Use "Test Send Message" to attempt sending a message via the API.
+- Use "Test Upload Media" to attempt uploading media via the API.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Note: Sending messages and uploading media require valid API credentials and will fail with dummy values.
+
+## Resources
+
+- [WhatsApp Cloud API Documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/)
+- [Flutter Documentation](https://docs.flutter.dev/)
