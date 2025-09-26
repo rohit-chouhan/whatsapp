@@ -6,10 +6,20 @@ import 'package:whatsapp/utils/request.dart';
 
 /// Base class for all WhatsApp service classes providing common functionality.
 abstract class BaseService {
+  /// The access token for WhatsApp Cloud API authentication.
   final String accessToken;
+
+  /// The phone number ID used as the sender in API requests.
   final String fromNumberId;
+
+  /// The request utility for making HTTP calls.
   final Request request;
 
+  /// Creates an instance of [BaseService].
+  ///
+  /// [accessToken] The access token for authentication.
+  /// [fromNumberId] The sender phone number ID.
+  /// [request] The request utility instance.
   BaseService(this.accessToken, this.fromNumberId, this.request);
 
   /// Common headers for WhatsApp API requests.
@@ -40,12 +50,16 @@ abstract class BaseService {
       final response = await apiCall();
       return handleResponse(response, successParser);
     } on FormatException catch (e) {
+      print('DEBUG: JsonFormatException in executeApiCall: $e');
       throw JsonFormatException('Failed to parse JSON response: $e');
     } on http.ClientException catch (e) {
+      print('DEBUG: NetworkException in executeApiCall: $e');
       throw NetworkException('Network error: $e');
     } on WhatsAppException {
+      print('DEBUG: WhatsAppException rethrown in executeApiCall');
       rethrow;
     } catch (e) {
+      print('DEBUG: Unexpected error in executeApiCall: $e');
       throw WhatsAppException('An unexpected error occurred: $e');
     }
   }

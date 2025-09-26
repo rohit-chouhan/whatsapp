@@ -5,8 +5,8 @@ class VideoService extends BaseService {
   VideoService(super.accessToken, super.fromNumberId, super.request);
 
   Future<WhatsAppResponse> sendVideoById(
-      String phoneNumber, String mediaId, String? caption) async {
-    final videoContent = {'id': mediaId};
+      String phoneNumber, String videoId, String? caption) async {
+    final videoContent = {'id': videoId};
     if (caption != null) {
       videoContent['caption'] = caption;
     }

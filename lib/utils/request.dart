@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
+/// A utility class for making HTTP requests to the WhatsApp Cloud API.
+/// Handles request execution, response parsing, and error management.
 class Request {
   String? response;
   String? error;
@@ -105,7 +106,6 @@ class Request {
     }
   }
 
-
   Future<http.Response> postWithResponse(
     String endpoint,
     Map<String, String> headers,
@@ -137,7 +137,6 @@ class Request {
     return await http.Response.fromStream(streamedResponse);
   }
 
-
   Future<http.Response> postFormWithResponse(
     String endpoint,
     Map<String, String> headers,
@@ -161,7 +160,6 @@ class Request {
     final Uri uri = Uri.parse('$url$endpoint');
     return await http.get(uri, headers: headers);
   }
-
 
   Future<http.Response> getWithResponse(
       String endpoint, Map<String, String> headers) async {
@@ -193,7 +191,6 @@ class Request {
     }
   }
 
-
   Future<http.Response> deleteWithResponse(
     String endpoint,
     Map<String, String> headers,
@@ -215,7 +212,7 @@ class Request {
   Future<http.Response> uploadMediaFile({
     required String phoneNumberId,
     required String accessToken,
-    required File file,
+    required dynamic file,
     required String fileType,
   }) async {
     _clearState();
@@ -228,11 +225,23 @@ class Request {
       request.headers.addAll({"Authorization": "Bearer $accessToken"});
       request.fields['messaging_product'] = 'whatsapp';
 
-      request.files.add(await http.MultipartFile.fromPath(
-        'file',
-        file.path,
-        contentType: MediaType.parse(fileType),
-      ));
+      if (file is List<int>) {
+        // Web or bytes: use fromBytes
+        final filename = _getDefaultFilename(fileType);
+        request.files.add(http.MultipartFile.fromBytes(
+          'file',
+          file,
+          filename: filename,
+          contentType: MediaType.parse(fileType),
+        ));
+      } else {
+        // Assume File (native)
+        request.files.add(await http.MultipartFile.fromPath(
+          'file',
+          file.path,
+          contentType: MediaType.parse(fileType),
+        ));
+      }
 
       final streamedResponse = await request.send();
       final res = await http.Response.fromStream(streamedResponse);
@@ -424,6 +433,49 @@ class Request {
     url = 'https://graph.facebook.com/$version/';
   }
 
+  /// Uploads a binary file in chunks to the specified URL.
+  Future<http.Response> uploadBinaryFile(
+      {required String path,
+      required String accessToken,
+      dynamic file,
+      required String fileUrl,
+      required String fileType}) async {
+    try {
+      Uint8List bytes;
+      final uri = Uri.parse('$url$path');
+      if (fileUrl.isEmpty) {
+        bytes = await file.readAsBytes();
+      } else {
+        final fileResponse = await http.get(Uri.parse(fileUrl));
+        if (fileResponse.statusCode != 200) {
+          throw Exception(
+              'Failed to download file: ${fileResponse.statusCode}');
+        }
+        bytes = fileResponse.bodyBytes;
+      }
+
+      final request = http.Request('POST', uri);
+
+      // Add headers
+      request.headers.addAll({
+        "Authorization": "Bearer $accessToken",
+        "file_offset": "0",
+        "Content-Type": fileType,
+      });
+
+      // Add file bytes to body
+      request.bodyBytes = bytes;
+
+      // Send request
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      return response;
+    } catch (e) {
+      return http.Response('Exception: $e', 500);
+    }
+  }
+
   // Helper function to extract filename from URL
   String _getFilenameFromUrl(String fileUrl, String fileType) {
     try {
@@ -474,6 +526,8 @@ class Request {
         return 'audio/mpeg';
       case 'document':
         return 'application/pdf';
+      case 'sticker':
+        return 'image/webp';
       default:
         return 'application/octet-stream';
     }
@@ -542,6 +596,12 @@ class Request {
     }
   }
 
+  // Helper function to get default filename from MIME type
+  String _getDefaultFilename(String mimeType) {
+    final extension = _getFileExtensionFromMimeType(mimeType);
+    return 'upload$extension';
+  }
+
   // Helper function to get file extension from MIME type
   String _getFileExtensionFromMimeType(String mimeType) {
     switch (mimeType.toLowerCase()) {
@@ -572,5 +632,48 @@ class Request {
       default:
         return '.bin';
     }
+  }
+
+  // Automatically determine the MIME type based on the file extension.
+  String getAutoFileType(String filePath) {
+    // Extract extension (without dot, and lowercase)
+    final ext = filePath.split('.').last.toLowerCase();
+
+    // Mapping of extensions to MIME types
+    const mimeTypes = {
+      // Audio
+      'aac': 'audio/aac',
+      'amr': 'audio/amr',
+      'mp3': 'audio/mpeg',
+      'm4a': 'audio/mp4',
+      'ogg': 'audio/ogg',
+
+      // Document
+      'txt': 'text/plain',
+      'xls': 'application/vnd.ms-excel',
+      'xlsx':
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'doc': 'application/msword',
+      'docx':
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'ppt': 'application/vnd.ms-powerpoint',
+      'pptx':
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'pdf': 'application/pdf',
+
+      // Image
+      'jpeg': 'image/jpeg',
+      'jpg': 'image/jpeg',
+      'png': 'image/png',
+
+      // Sticker
+      'webp': 'image/webp',
+
+      // Video
+      '3gp': 'video/3gp',
+      'mp4': 'video/mp4',
+    };
+
+    return mimeTypes[ext] ?? 'application/octet-stream';
   }
 }

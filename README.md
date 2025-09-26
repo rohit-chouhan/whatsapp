@@ -31,53 +31,61 @@ Other useful links:
 
 ---
 
-## New Features in v4.0.0
+## New Features in v4.0.0  
 
-- **Speed Optimized** – Now 3x faster than previous versions
-- **Dedicated Methods** – Each service now has its own getter for better clarity
-- **Flow Messages** – Send interactive flow messages for enhanced user experience
-- **Catalog & Product Messages** – Send product information and catalog messages for e-commerce
-- **Enhanced Error Handling** – Clearer exceptions with specific error types
-- **Bugs Fixed** – Fixed issues with various methods
-- **Updated API Version** – Now supports WhatsApp Business API v23.0
+- **Performance Improvements** – Optimized core methods, now up to 3x faster than previous versions.  
+- **Web Platform Support** – Now supports fully compatibility with Flutter Web.  
+- **Service-Specific Methods** – Each service now provides dedicated getters for cleaner and more explicit usage.  
+- **Flow Messages** – Added support for interactive flow messages to improve user engagement.  
+- **Catalog & Product Messages** – Send product details and catalog messages for e-commerce use cases.  
+- **Resumable Uploads** – Support for creating and managing resumable upload sessions for large files.  
+- **Error Handling Enhancements** – Improved and added `WhatsAppException` handling with detailed error types.  
+- **Bug Fixes** – Resolved multiple issues affecting stability and reliability.  
+- **API Upgrade** – Updated to support `WhatsApp Business API v23.0` (stable).  
 
 ---
 
 ## Basic Usage
 
 ```dart
-const accessToken ='EAAGp6aTb8.....';
-const fromNumberId = '1082772452xxxxx';
+// Access token provided by Meta for WhatsApp Cloud API
+const accessToken = 'YOUR_ACCESS_TOKEN';
 
+// Your WhatsApp Business phone number ID
+const fromNumberId = 'YOUR_PHONE_NUMBER_ID';
+
+// Create WhatsApp client instance
 final whatsapp = WhatsApp(accessToken, fromNumberId);
 
-var res = await whatsapp.sendMessage(
-    phoneNumber: 'PHONE_NUMBER',
-    text: 'text_message',
-    previewUrl: true,
+// Send a simple text message
+var message = await whatsapp.sendMessage(
+  phoneNumber: 'RECEIPT_NUMBER', // Recipient's phone number in international format
+  text: 'Hi, how are you?',      // Message content
 );
 
-if (res.isSuccess()) {
-    // when message sent
-    //Return id of message
-    print('Message ID: ${res.getMessageId()}');
-
-    //Return number where message sent
-    print('Message sent to: ${res.getContactId()}');
-
-    //Return exact API Response Body
-    print('API Response: ${res.getFullResponse()}');
+if (message.isSuccess()) {
+  // Message sent successfully
+  // Get and print the unique ID of the sent message
+  print('Message ID: ${message.getMessageId()}');
+  // Get and print the recipient number
+  print('Message sent to: ${message.getContactId()}');
+  // Get and print the full API response body
+  print('API Response: ${message.getFullResponse()}');
 } else {
-    //Will return WhatsApp error code
-    print('HTTP Code: ${res.getErrorCode()}');
-
-    // Will return exact error from WhatsApp Cloud API
-    print('API Error: ${res.getErrorMessage()}');
-
-    // Will return WhatsApp error type
-    print('Request Error: ${res.getErrorType()}');
+  // Message failed to send
+  // Print HTTP error code returned by the API
+  print('HTTP Code: ${message.getErrorCode()}');
+  // Print exact error details from WhatsApp Cloud API
+  print('API Error: ${message.getErrorMessage()}');
+  // Print type of request error (e.g., validation, authorization, etc.)
+  print('Request Error: ${message.getErrorType()}');
 }
 ```
+
+## 📌 Looking for a Better Example?
+
+👉 Check out this **working example** here:  
+🔗 [pub.dev WhatsApp Example](https://pub.dev/packages/whatsapp/example)
 
 # Contributors
 

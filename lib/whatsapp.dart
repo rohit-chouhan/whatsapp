@@ -1,6 +1,7 @@
-library whatsapp;
+library;
 
-import 'dart:io';
+/// A Flutter package for integrating with the WhatsApp Business Cloud API.
+/// Provides convenient methods for sending messages, media, and managing business accounts.
 
 import 'package:whatsapp/services/account.dart';
 import 'package:whatsapp/services/business.dart';
@@ -16,6 +17,7 @@ import 'package:whatsapp/services/phone.dart';
 import 'package:whatsapp/services/reaction.dart';
 import 'package:whatsapp/services/registration.dart';
 import 'package:whatsapp/services/reply.dart';
+import 'package:whatsapp/services/resumable.dart';
 import 'package:whatsapp/services/sticker.dart';
 import 'package:whatsapp/services/template.dart';
 import 'package:whatsapp/services/text.dart';
@@ -31,6 +33,7 @@ import 'package:whatsapp/utils/response/whatsapp_media_get_response.dart';
 import 'package:whatsapp/utils/response/whatsapp_media_upload_response.dart';
 import 'package:whatsapp/utils/response/whatsapp_business_account_response.dart';
 import 'package:whatsapp/utils/response/whatsapp_response.dart';
+import 'package:whatsapp/utils/response/whatsapp_resumable_upload_response.dart';
 import 'package:whatsapp/utils/response/whatsapp_success_response.dart';
 
 /// High-level client for WhatsApp Cloud API.
@@ -64,6 +67,7 @@ class WhatsApp {
   FlowService? _flowService;
   CatalogService? _catalogService;
   StatusService? _statusService;
+  ResumableService? _resumableService;
 
   /// Create a new WhatsApp client.
   ///
@@ -123,6 +127,8 @@ class WhatsApp {
       _catalogService ??= CatalogService(_accessToken, _fromNumberId, _request);
   StatusService get _getStatusService =>
       _statusService ??= StatusService(_accessToken, _fromNumberId, _request);
+  ResumableService get _getResumableService => _resumableService ??=
+      ResumableService(_accessToken, _fromNumberId, _request);
 
   /// Send a message to the specified phone number
   /// [phoneNumber] The phone number with country code to which the message will be sent
@@ -139,15 +145,15 @@ class WhatsApp {
 
   /// Send a message with an image attachment to the specified phone number
   /// [phoneNumber] The phone number with country code to which the message will be sent
-  /// [mediaId] The uploaded image file id to be sent
+  /// [imageId] The uploaded image file id to be sent
   /// [caption] The caption for the image (optional)
   ///
   /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the image was sent successfully.
   Future<WhatsAppResponse> sendImageById(
       {required String phoneNumber,
-      required String mediaId,
+      required String imageId,
       String? caption}) async {
-    return await _getImageService.sendImageById(phoneNumber, mediaId, caption);
+    return await _getImageService.sendImageById(phoneNumber, imageId, caption);
   }
 
   /// Send a message with an image attachment to the specified phone number
@@ -166,12 +172,12 @@ class WhatsApp {
 
   /// Send a message with an audio attachment to the specified phone number using Media Id
   /// [phoneNumber] The phone number with country code to which the message will be sent
-  /// [mediaId] The uploaded audio file id to be sent
+  /// [audioId] The uploaded audio file id to be sent
   ///
   /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the audio was sent successfully.
   Future<WhatsAppResponse> sendAudioById(
-      {required String phoneNumber, required String mediaId}) async {
-    return await _getAudioService.sendAudioById(phoneNumber, mediaId);
+      {required String phoneNumber, required String audioId}) async {
+    return await _getAudioService.sendAudioById(phoneNumber, audioId);
   }
 
   /// Send a message with an audio attachment to the specified phone number using URL
@@ -186,18 +192,18 @@ class WhatsApp {
 
   /// Send a message with a document attachment to the specified phone number using Media Id
   /// [phoneNumber] The phone number with country code to which the message will be sent
-  /// [mediaId] The uploaded document file id to be sent
+  /// [documentId] The uploaded document file id to be sent
   /// [caption] The caption for the document (optional)
   /// [filename] The filename for the document (optional)
   ///
   /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the document was sent successfully.
   Future<WhatsAppResponse> sendDocumentById(
       {required String phoneNumber,
-      required String mediaId,
+      required String documentId,
       String? caption,
       String? filename}) async {
     return await _getDocumentService.sendDocumentById(
-        phoneNumber, mediaId, caption, filename);
+        phoneNumber, documentId, caption, filename);
   }
 
   /// Send a message with a document attachment to the specified phone number using URL
@@ -218,15 +224,15 @@ class WhatsApp {
 
   /// Send a message with a video attachment to the specified phone number
   /// [phoneNumber] The phone number with country code to which the message will be sent
-  /// [mediaId] The uploaded video file id to be sent
+  /// [videoId] The uploaded video file id to be sent
   /// [caption] The caption for the video (optional)
   ///
   /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the video was sent successfully.
   Future<WhatsAppResponse> sendVideoById(
       {required String phoneNumber,
-      required String mediaId,
+      required String videoId,
       String? caption}) async {
-    return await _getVideoService.sendVideoById(phoneNumber, mediaId, caption);
+    return await _getVideoService.sendVideoById(phoneNumber, videoId, caption);
   }
 
   /// Send a message with a video attachment to the specified phone number
@@ -404,12 +410,12 @@ class WhatsApp {
   }
 
   /// Upload media file to business server
-  /// [file] The file to be uploaded
+  /// [file] The file to be uploaded (`File` on native, `List<int>` on web)
   /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
   ///
-  /// Returns a [Request] object with the media ID and response details if the upload was successful.
+  /// Returns a [WhatsAppMediaUploadResponse] object with the media ID and response details if the upload was successful.
   Future<WhatsAppMediaUploadResponse> uploadMediaFile(
-      {required File file, required String fileType}) async {
+      {required dynamic file, required String fileType}) async {
     return await _getMediaService.uploadMediaFile(file, fileType);
   }
 
@@ -455,7 +461,7 @@ class WhatsApp {
   }
 
   /// Get business profile details
-  /// [scope] The scope of the business details (e.g. ["name", "email"]) (optional)
+  /// [scope] The scope of the business details (e.g. `["name", "email"]`) (optional)
   ///
   /// Returns a [WhatsAppBusinessAccountResponse] containing the business profile details.
   Future<WhatsAppBusinessAccountResponse> getBusinessProfile(
@@ -714,5 +720,102 @@ class WhatsApp {
   Future<WhatsAppGetBlockedUsersResponse> getBlockedUsers(
       {int? limit, String? before, String? after}) async {
     return await _getAccountService.getBlockedUsers(limit, before, after);
+  }
+
+  /// Get the file type of a file based on its path or URL
+  /// [filePath] The file path or URL of the file
+  ///
+  /// Returns the file type as a string (e.g., "image/jpeg", "video/mp4", "document/pdf") or null if the file type could not be determined.
+  String getAutoFileType({required String filePath}) {
+    return _request.getAutoFileType(filePath);
+  }
+
+  /// Create a resumable upload session for large files
+  /// [fileLength] The total length of the file in bytes
+  /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
+  /// [fileName] The name of the file (optional)
+  ///
+  /// Returns a [WhatsAppResumableUploadResponse] containing the upload session details if the session was created successfully.
+  Future<WhatsAppResumableUploadResponse> createResumableUploadSession({
+    required int fileLength,
+    required String fileType,
+    String? fileName,
+  }) async {
+    return await _getResumableService.createResumableUploadSession(
+      fileLength: fileLength,
+      fileType: fileType,
+      fileName: fileName,
+    );
+  }
+
+  /// Upload a large file using a resumable upload session
+  /// [uploadId] The ID of the resumable upload session
+  /// [file] The file to upload
+  /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
+  ///
+  /// Returns a [WhatsAppResumableUploadResponse] indicating whether the file was uploaded successfully.
+  Future<WhatsAppResumableUploadResponse> uploadResumableFile({
+    required String uploadId,
+    required dynamic file,
+    required String fileType,
+  }) async {
+    return await _getResumableService.uploadResumableFile(
+      uploadId: uploadId,
+      file: file,
+      fileType: fileType,
+    );
+  }
+
+  /// Upload a large file using a resumable upload session by url
+  /// [uploadId] The ID of the resumable upload session
+  /// [fileUrl] The file to upload
+  /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
+  ///
+  /// Returns a [WhatsAppResumableUploadResponse] indicating whether the file was uploaded successfully.
+  Future<WhatsAppResumableUploadResponse> uploadResumableFileByUrl({
+    required String uploadId,
+    required String fileUrl,
+    required String fileType,
+  }) async {
+    return await _getResumableService.uploadResumableFileByUrl(
+      uploadId: uploadId,
+      fileUrl: fileUrl,
+      fileType: fileType,
+    );
+  }
+
+  /// Get the status of a resumable upload session
+  /// [uploadId] The ID of the resumable upload session
+  ///
+  /// Returns a [WhatsAppResumableUploadResponse] containing the status of the upload session.
+  Future<WhatsAppResumableUploadResponse> getResumableUploadSession({
+    required String uploadId,
+  }) async {
+    return await _getResumableService.getResumableUploadSession(
+        uploadId: uploadId);
+  }
+
+  /// Create and upload a file using a resumable upload session
+  /// [fileLength] The total length of the file in bytes
+  /// [file] The file to upload
+  /// [fileUrl] The URL of the file to upload
+  /// [fileType] The type of the file (e.g., "image/jpeg", "video/mp4", "document/pdf")
+  /// [fileName] The name of the file (optional)
+  ///
+  /// Use either `file` or `fileUrl`—only one is allowed.
+  /// Returns a [WhatsAppResumableUploadResponse] containing the upload session details if the file was created and uploaded successfully.
+  Future<WhatsAppResumableUploadResponse> createUploadResumableFile(
+      {required int fileLength,
+      dynamic file,
+      String fileUrl = '',
+      required String fileType,
+      String? fileName}) async {
+    return await _getResumableService.createUploadResumableFile(
+      fileLength: fileLength,
+      file: file,
+      fileUrl: fileUrl,
+      fileType: fileType,
+      fileName: fileName,
+    );
   }
 }

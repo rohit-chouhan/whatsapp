@@ -7,11 +7,23 @@ import 'package:whatsapp/utils/response/whatsapp_get_blocked_users_response.dart
 import 'package:http/http.dart' as http;
 import 'package:whatsapp/utils/response/whatsapp_success_response.dart';
 
+/// A service for managing WhatsApp account-related operations such as
+/// registration, blocking, and unblocking users.
 class AccountService {
+  /// The access token for WhatsApp Cloud API authentication.
   final String accessToken;
+
+  /// The phone number ID used as the sender in API requests.
   final String fromNumberId;
+
+  /// The request utility for making HTTP calls.
   final Request request;
 
+  /// Creates an instance of [AccountService].
+  ///
+  /// [accessToken] The access token for authentication.
+  /// [fromNumberId] The sender phone number ID.
+  /// [request] The request utility instance.
   AccountService(this.accessToken, this.fromNumberId, this.request);
 
   /// Registers the number for use with Cloud API after performing backup.
@@ -129,8 +141,9 @@ class AccountService {
         .toList();
     final Map<String, dynamic> body = {
       "messaging_product": "whatsapp",
-      "block_users": unblockUsers
+      "unblock_users": unblockUsers
     };
+    print('DEBUG: unblockUsers payload: $body');
 
     var url = '$fromNumberId/block_users';
     try {
@@ -204,12 +217,20 @@ class AccountService {
             WhatsAppGetBlockedUsersResponse.fromJson(responseBody);
         return parsedResponse;
       } else {
-        throw WhatsAppException(
-            'Failed to fetch blocked users: ${response.statusCode}');
+        throw WhatsAppException.fromResponse(response);
       }
+    } on FormatException catch (e) {
+      // Handle JSON decoding errors specifically
+      throw JsonFormatException('Failed to parse JSON response: $e');
+    } on http.ClientException catch (e) {
+      // Handle network-related errors (e.g., no internet, timeout)
+      throw NetworkException('Network error: $e');
+    } on WhatsAppException {
+      // Re-throw WhatsApp-specific exceptions.
+      rethrow;
     } catch (e) {
-      // Handle network or parsing errors
-      throw WhatsAppException('An error occurred: $e');
+      // Handle any other unexpected exceptions.
+      throw WhatsAppException('An unexpected error occurred: $e');
     }
   }
 }

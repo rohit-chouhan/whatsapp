@@ -15,7 +15,7 @@ class BusinessService {
 
   /// Gets the business profile details.
   ///
-  /// [scope] The scope of the business details (e.g. ["name", "email"]) (optional).
+  /// [scope] The scope of the business details (e.g. `["name", "email"]`) (optional).
   ///
   /// Returns a [WhatsAppBusinessAccountResponse] containing the business profile details.
   Future<WhatsAppBusinessAccountResponse> getBusinessProfile(

@@ -13,6 +13,7 @@ void main() async {
   String? documentMediaId;
   String? videoMediaId;
   String? stickerMediaId;
+  String? uploadId;
 
   final String phoneNumber = dotenv.env['RECEIPT_NUMBER']!;
   final String accessToken = dotenv.env['ACCESS_TOKEN']!;
@@ -28,10 +29,11 @@ void main() async {
   group('uploadMediaFileByUrl Media Tests', () {
     //image
     test('uploadMediaFileByUrl (Image) success', () async {
+      final fileUrl =
+          'https://raw.githack.com/rohit-chouhan/whatsapp/main/sample_files/sample.png';
       final uploadImage = await whatsapp.uploadMediaFileByUrl(
-        fileUrl:
-            'https://raw.githack.com/rohit-chouhan/whatsapp/main/sample_files/sample.png',
-        fileType: 'image/png',
+        fileUrl: fileUrl,
+        fileType: whatsapp.getAutoFileType(filePath: fileUrl),
       );
       if (uploadImage.isSuccess()) {
         imageMediaId = uploadImage.getMediaId();
@@ -207,7 +209,7 @@ void main() async {
 
       final result = await whatsapp.sendImageById(
         phoneNumber: phoneNumber,
-        mediaId: imageMediaId!,
+        imageId: imageMediaId!,
         caption: 'Test caption (ID)',
       );
 
@@ -233,7 +235,7 @@ void main() async {
 
       final result = await whatsapp.sendAudioById(
         phoneNumber: phoneNumber,
-        mediaId: audioMediaId!,
+        audioId: audioMediaId!,
       );
       print('Response: ${result.getFullResponse()}');
       expect(result.isSuccess(), true);
@@ -256,7 +258,7 @@ void main() async {
 
       final result = await whatsapp.sendDocumentById(
         phoneNumber: phoneNumber,
-        mediaId: documentMediaId!,
+        documentId: documentMediaId!,
         caption: 'Test document (ID)',
         filename: 'test.pdf',
       );
@@ -283,7 +285,7 @@ void main() async {
 
       final result = await whatsapp.sendVideoById(
         phoneNumber: phoneNumber,
-        mediaId: videoMediaId!,
+        videoId: videoMediaId!,
         caption: 'Test video (ID)',
       );
       print('Response: ${result.getFullResponse()}');
@@ -443,7 +445,7 @@ void main() async {
     test('sendReaction success', () async {
       final result = await whatsapp.sendReaction(
         phoneNumber: phoneNumber,
-        messageId: waMessageId!,
+        messageId: waMessageId,
         emoji: '👍',
       );
       print('Response: ${result.getFullResponse()}');
@@ -454,14 +456,13 @@ void main() async {
 
   group('Status Tests', () {
     test('markAsRead success', () async {
-      final result = await whatsapp.markAsRead(messageId: waMessageId!);
+      final result = await whatsapp.markAsRead(messageId: waMessageId);
       print('Response: ${result.getFullResponse()}');
       expect(result.isSuccess(), true);
     });
 
     test('sendTypingIndicator success', () async {
-      final result =
-          await whatsapp.sendTypingIndicator(messageId: waMessageId!);
+      final result = await whatsapp.sendTypingIndicator(messageId: waMessageId);
       print('Response: ${result.getFullResponse()}');
       expect(result.isSuccess(), true);
     });
@@ -471,7 +472,7 @@ void main() async {
     test('reply success', () async {
       final result = await whatsapp.reply(
         phoneNumber: phoneNumber,
-        messageId: waMessageId!,
+        messageId: waMessageId,
         reply: {
           'type': 'text',
           'text': {'body': 'This is a reply'},
@@ -640,6 +641,81 @@ void main() async {
       final result = await whatsapp.getBlockedUsers();
       print('Response: ${result.getFullResponse()}');
       expect(result.isSuccess(), true);
+    });
+  });
+
+  group('Resumable Tests', () {
+    test('createResumableUploadSession success', () async {
+      var result = await whatsapp.createResumableUploadSession(
+        fileLength: 210915,
+        fileType: 'image/png',
+        fileName: 'sample.png',
+      );
+      uploadId = result.getId();
+      print('Response: ${result.getFullResponse()}');
+      expect(result.isSuccess(), true);
+      expect(uploadId, isNotNull);
+    });
+
+    test('getResumableUploadSession success', () async {
+      print("Picked uploadId: $uploadId");
+      var result = await whatsapp.getResumableUploadSession(
+        uploadId: uploadId!,
+      );
+      print('Response: ${result.getFullResponse()}');
+      expect(result.isSuccess(), true);
+      expect(result.getId(), isNotNull);
+      expect(result.getFileOffset(), isNotNull);
+    });
+
+    test('uploadResumableFile success', () async {
+      print("Picked uploadId: $uploadId");
+      var result = await whatsapp.uploadResumableFile(
+        uploadId: uploadId!,
+        file: File('sample_files/resumable-sample.png'),
+        fileType: 'image/png',
+      );
+      print('Response: ${result.getFullResponse()}');
+      expect(result.isSuccess(), true);
+      expect(result.getH(), isNotNull);
+    });
+
+    test('uploadResumableFileByUrl success', () async {
+      print("Picked uploadId: $uploadId");
+      var result = await whatsapp.uploadResumableFileByUrl(
+        uploadId: uploadId!,
+        fileUrl:
+            'http://raw.githack.com/rohit-chouhan/whatsapp/main/sample_files/resumable-sample.png',
+        fileType: 'image/png',
+      );
+      print('Response: ${result.getFullResponse()}');
+      expect(result.isSuccess(), true);
+      expect(result.getH(), isNotNull);
+    });
+
+    test('createUploadResumableFile success', () async {
+      var result = await whatsapp.createUploadResumableFile(
+        fileLength: 210915,
+        file: File('sample_files/resumable-sample.png'),
+        fileType: 'image/png',
+        fileName: 'resumable-sample.png',
+      );
+      print('Response: ${result.getFullResponse()}');
+      expect(result.isSuccess(), true);
+      expect(result.getH(), isNotNull);
+    });
+
+    test('createUploadResumableFileByUrl success', () async {
+      var result = await whatsapp.createUploadResumableFile(
+        fileLength: 210915,
+        fileUrl:
+            'http://raw.githack.com/rohit-chouhan/whatsapp/main/sample_files/resumable-sample.png',
+        fileType: 'image/png',
+        fileName: 'resumable-sample.png',
+      );
+      print('Response: ${result.getFullResponse()}');
+      expect(result.isSuccess(), true);
+      expect(result.getH(), isNotNull);
     });
   });
 }

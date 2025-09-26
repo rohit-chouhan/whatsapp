@@ -1,5 +1,5 @@
 name: whatsapp
-description: A top package for whatsapp business api send messages, product, media, location through flutter app.
+description: A Flutter package for integrating with the WhatsApp Business API. Send messages, products, media, and locations directly from your Flutter app.
 version: 4.0.0
 homepage: https://rohitchouhan.com
 repository: https://github.com/rohit-chouhan/whatsapp

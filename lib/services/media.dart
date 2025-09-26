@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:whatsapp/utils/exception.dart';
@@ -16,7 +15,7 @@ class MediaService {
   MediaService(this.accessToken, this.fromNumberId, this.request);
 
   Future<WhatsAppMediaUploadResponse> uploadMediaFile(
-      File file, String fileType) async {
+      dynamic file, String fileType) async {
     try {
       final http.Response response = await request.uploadMediaFile(
           accessToken: accessToken,
@@ -49,14 +48,14 @@ class MediaService {
   }
 
   Future<WhatsAppMediaUploadResponse> uploadMediaFileByUrl(
-      String fileUrl, String fileType) async {
+      String fileUrl, String? fileType) async {
     try {
       final http.Response response =
           await request.uploadMediaFileByUrlWithResponse(
               accessToken: accessToken,
               phoneNumberId: fromNumberId,
               fileUrl: fileUrl,
-              fileType: fileType);
+              fileType: fileType!);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);

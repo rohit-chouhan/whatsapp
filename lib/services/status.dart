@@ -5,18 +5,26 @@ import 'package:whatsapp/utils/exception.dart';
 import 'package:whatsapp/utils/request.dart';
 import 'package:whatsapp/utils/response/whatsapp_success_response.dart';
 
+/// A service for managing message status operations such as marking as read
+/// and sending typing indicators.
 class StatusService {
+  /// The access token for WhatsApp Cloud API authentication.
   final String accessToken;
+
+  /// The phone number ID used as the sender in API requests.
   final String fromNumberId;
+
+  /// The request utility for making HTTP calls.
   final Request request;
 
+  /// Creates an instance of [StatusService].
   StatusService(this.accessToken, this.fromNumberId, this.request);
 
-
-  /// Mark message as read
-  /// [messageId] The message ID to mark as read
+  /// Marks a message as read.
   ///
-  /// return Request The response object containing the HTTP response code, error message, and message ID if the
+  /// [messageId] The message ID to mark as read.
+  ///
+  /// Returns a [WhatsAppSuccessResponse] indicating success.
   Future<WhatsAppSuccessResponse> markAsRead(String messageId) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -58,10 +66,11 @@ class StatusService {
     }
   }
 
-
-  /// New Method for Typing Indicators
-  /// Send typing indicators
-  /// [messageId] The message ID to send typing indicators for
+  /// Sends a typing indicator for a message.
+  ///
+  /// [messageId] The message ID to send typing indicators for.
+  ///
+  /// Returns a [WhatsAppSuccessResponse] indicating success.
   Future<WhatsAppSuccessResponse> sendTypingIndicator(String messageId) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
