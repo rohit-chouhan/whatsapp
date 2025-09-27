@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/banner.png" alt="WhatsApp Flutter Banner"/>
+  <img src="https://raw.githubusercontent.com/rohit-chouhan/whatsapp/main/img/whatsapp-flutter-banner-v4.png" alt="WhatsApp Flutter Banner"/>
 </p>
 
 This Flutter package allows you to integrate the **WhatsApp Business API** into your Flutter applications. It enables sending `messages`, `media`, `templates`, managing `business information`, creating `interactives` and `flows`, sending `catalog messages`, and more. The package is updated to support the latest **WhatsApp Business API v23.0**.
@@ -31,17 +31,17 @@ Other useful links:
 
 ---
 
-## New Features in v4.0.0  
+## New Features in v4.0.0
 
-- **Performance Improvements** – Optimized core methods, now up to 3x faster than previous versions.  
-- **Web Platform Support** – Now supports fully compatibility with Flutter Web.  
-- **Service-Specific Methods** – Each service now provides dedicated getters for cleaner and more explicit usage.  
-- **Flow Messages** – Added support for interactive flow messages to improve user engagement.  
-- **Catalog & Product Messages** – Send product details and catalog messages for e-commerce use cases.  
-- **Resumable Uploads** – Support for creating and managing resumable upload sessions for large files.  
-- **Error Handling Enhancements** – Improved and added `WhatsAppException` handling with detailed error types.  
-- **Bug Fixes** – Resolved multiple issues affecting stability and reliability.  
-- **API Upgrade** – Updated to support `WhatsApp Business API v23.0` (stable).  
+- **Performance Improvements** – Optimized core methods, now up to 3x faster than previous versions.
+- **Web Platform Support** – Now supports fully compatibility with Flutter Web for most features.
+- **Service-Specific Methods** – Each service now provides dedicated getters for cleaner and more explicit usage.
+- **Flow Messages** – Added support for interactive flow messages to improve user engagement.
+- **Catalog & Product Messages** – Send product details and catalog messages for e-commerce use cases.
+- **Resumable Uploads** – Support for creating and managing resumable upload sessions for large files.
+- **Error Handling Enhancements** – Improved and added `WhatsAppException` handling with detailed error types.
+- **Bug Fixes** – Resolved multiple issues affecting stability and reliability.
+- **API Upgrade** – Updated to support `WhatsApp Business API v23.0` (stable).
 
 ---
 

@@ -25,10 +25,11 @@ dev_dependencies:
 flutter:
   assets:
     - .env
+    - img/logo.webp
 
 screenshots:
-  - description: "© WhatsApp"
-    path: img/logo.png
+  - description: "WhatsApp Business"
+    path: img/logo.webp
 
 topics:
   - whatsapp

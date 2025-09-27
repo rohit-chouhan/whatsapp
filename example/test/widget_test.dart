@@ -19,7 +19,8 @@ void main() {
     expect(find.text('WhatsApp Package Test'), findsOneWidget);
 
     // Verify that text fields are present
-    expect(find.byType(TextField), findsNWidgets(5)); // token, fromNumber, phone, message, mediaUrl
+    expect(find.byType(TextField),
+        findsNWidgets(5)); // token, fromNumber, phone, message, mediaUrl
 
     // Verify that buttons are present
     expect(find.text('Update Credentials'), findsOneWidget);
@@ -28,7 +29,8 @@ void main() {
     expect(find.text('Test Upload Media'), findsOneWidget);
   });
 
-  testWidgets('Generate WhatsApp Link shows dialog', (WidgetTester tester) async {
+  testWidgets('Generate WhatsApp Link shows dialog',
+      (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
@@ -44,7 +46,6 @@ void main() {
     expect(find.textContaining('api.whatsapp.com'), findsOneWidget);
   });
 
-
   testWidgets('Update Credentials shows snackbar', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
@@ -57,5 +58,4 @@ void main() {
     expect(find.byType(SnackBar), findsOneWidget);
     expect(find.text('Credentials updated'), findsOneWidget);
   });
-
 }

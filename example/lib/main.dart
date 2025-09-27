@@ -1,35 +1,126 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:whatsapp/whatsapp.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'settings_page.dart';
+import 'business_page.dart';
 
 void main() async {
+  //rename .env.example to .env and add your credentials
   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late WhatsApp whatsapp;
+  bool isLoading = true;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCredentials();
+  }
+
+  Future<void> _loadCredentials() async {
+    try {
+      await dotenv.load(fileName: ".env");
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken =
+          prefs.getString('access_token') ?? dotenv.env['ACCESS_TOKEN'] ?? '';
+      final fromNumberId = prefs.getString('phone_number_id') ??
+          dotenv.env['PHONE_NUMBER_ID'] ??
+          '';
+      whatsapp = WhatsApp(accessToken, fromNumberId);
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      // Handle error, perhaps show error screen
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return MaterialApp(
+        title: 'WhatsApp Package Test',
+        color: Colors.white,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: const Color(0xFF25D366),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF25D366)),
+          useMaterial3: true,
+        ),
+        home: const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+    final List<Widget> pages = [
+      WhatsAppTestPage(whatsapp: whatsapp),
+      BusinessPage(whatsapp: whatsapp),
+      const SettingsPage(),
+    ];
     return MaterialApp(
       title: 'WhatsApp Package Test',
+      color: Colors.white,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF25D366),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF25D366)),
         useMaterial3: true,
       ),
-      home: const WhatsAppTestPage(),
+      home: Scaffold(
+        body: pages[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          selectedItemColor: const Color(0xFF25D366),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Main',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.business),
+              label: 'Business',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class WhatsAppTestPage extends StatefulWidget {
-  const WhatsAppTestPage({super.key});
+  final WhatsApp whatsapp;
+
+  const WhatsAppTestPage({super.key, required this.whatsapp});
 
   @override
   State<WhatsAppTestPage> createState() => _WhatsAppTestPageState();
@@ -48,56 +139,38 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
   );
   final TextEditingController _mediaIdController = TextEditingController();
 
-  late WhatsApp whatsapp;
-  String accessToken = '';
-  String fromNumberId = '';
   var mediaId = '';
-  bool isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadCredentials();
-  }
-
-  Future<void> _loadCredentials() async {
-    print('DEBUG: Starting _loadCredentials');
-    try {
-      await dotenv.load(fileName: ".env");
-      print('DEBUG: dotenv loaded successfully');
-    } catch (e) {
-      print('DEBUG: Error loading dotenv: $e');
-    }
-    final prefs = await SharedPreferences.getInstance();
-    print('DEBUG: SharedPreferences instance obtained');
-    accessToken =
-        prefs.getString('access_token') ?? dotenv.env['ACCESS_TOKEN'] ?? '';
-    fromNumberId = prefs.getString('phone_number_id') ??
-        dotenv.env['PHONE_NUMBER_ID'] ??
-        '';
-    print('DEBUG: accessToken: ${accessToken.isNotEmpty ? 'set' : 'empty'}');
-    print('DEBUG: fromNumberId: ${fromNumberId.isNotEmpty ? 'set' : 'empty'}');
-    try {
-      whatsapp = WhatsApp(accessToken, fromNumberId);
-      print('DEBUG: WhatsApp instance created');
-    } catch (e) {
-      print('DEBUG: Error creating WhatsApp instance: $e');
-    }
-    print('DEBUG: Setting isLoading to false');
-    setState(() {
-      isLoading = false;
-    });
-    print('DEBUG: _loadCredentials completed');
-  }
-
-  void _showSnackBar(String message) {
+  void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+      SnackBar(content: Text(message), backgroundColor: color),
     );
   }
 
+  dynamic _onLoading(bool show) {
+    if (show) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return const Center(
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
   void _showError(String error) {
-    _showSnackBar('Error: $error');
+    _showSnackBar('Error: $error', Colors.red);
   }
 
   Future<void> _execute(Function() action) async {
@@ -110,17 +183,6 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('WhatsApp Package Test'),
-          backgroundColor: const Color(0xFF25D366),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('WhatsApp Package Test'),
@@ -197,17 +259,6 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SettingsPage()),
-          );
-          _loadCredentials(); // Refresh credentials after returning from settings
-        },
-        backgroundColor: const Color(0xFF25D366),
-        child: const Icon(Icons.settings),
-      ),
     );
   }
 
@@ -237,11 +288,14 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
       children: [
         ElevatedButton.icon(
           onPressed: () => _execute(() async {
-            final response = await whatsapp.sendMessage(
+            await _onLoading(true);
+            final response = await widget.whatsapp.sendMessage(
               phoneNumber: _phoneController.text,
               text: _messageController.text,
             );
-            _showSnackBar('Message sent: ${response.getMessageId()}');
+            await _onLoading(false);
+            _showSnackBar(
+                'Message sent: ${response.getMessageId()}', Colors.green);
           }),
           icon: const Icon(Icons.send),
           label: const Text('Send Text Message'),
@@ -260,18 +314,29 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
               type: FileType.image,
             );
             if (result != null) {
-              final bytes = result.files.single.bytes;
-              final uploadResponse = await whatsapp.uploadMediaFile(
-                file: bytes!,
-                fileType: 'image/png',
-              );
+              await _onLoading(true);
+              var uploadResponse;
+              if (!kIsWeb) {
+                uploadResponse = await widget.whatsapp.uploadMediaFile(
+                  file: File(result.files.first.path!),
+                  fileType: widget.whatsapp
+                      .getAutoFileType(filePath: result.files.first.path!),
+                );
+              } else {
+                uploadResponse = await widget.whatsapp.uploadMediaFile(
+                  file: result.files.first.bytes!,
+                  fileType: widget.whatsapp
+                      .getAutoFileType(filePath: result.files.first.name),
+                );
+              }
               final mediaId = uploadResponse.getMediaId();
               _mediaIdController.text = mediaId;
-              await whatsapp.sendImageById(
+              await widget.whatsapp.sendImageById(
                 phoneNumber: _phoneController.text,
                 imageId: mediaId,
               );
-              _showSnackBar('Image uploaded and sent');
+              await _onLoading(false);
+              _showSnackBar('Image uploaded and sent', Colors.green);
             }
           },
           icon: const Icon(Icons.upload_file),
@@ -280,11 +345,13 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
         const SizedBox(height: 8),
         ElevatedButton.icon(
           onPressed: () => _execute(() async {
-            await whatsapp.sendImageByUrl(
+            await _onLoading(true);
+            await widget.whatsapp.sendImageByUrl(
               phoneNumber: _phoneController.text,
               imageUrl: _mediaUrlController.text,
             );
-            _showSnackBar('Image sent by URL');
+            await _onLoading(false);
+            _showSnackBar('Image sent by URL', Colors.green);
           }),
           icon: const Icon(Icons.image),
           label: const Text('Send Image by URL'),
@@ -292,11 +359,13 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
         const SizedBox(height: 8),
         ElevatedButton.icon(
           onPressed: () => _execute(() async {
-            await whatsapp.sendImageById(
+            await _onLoading(true);
+            await widget.whatsapp.sendImageById(
               phoneNumber: _phoneController.text,
               imageId: _mediaIdController.text,
             );
-            _showSnackBar('Image sent by ID');
+            await _onLoading(false);
+            _showSnackBar('Image sent by ID', Colors.green);
           }),
           icon: const Icon(Icons.image),
           label: const Text('Send Image by ID'),
@@ -304,9 +373,11 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
         const SizedBox(height: 8),
         ElevatedButton.icon(
           onPressed: () => _execute(() async {
-            await whatsapp.deleteMedia(mediaId: _mediaIdController.text);
+            await _onLoading(true);
+            await widget.whatsapp.deleteMedia(mediaId: _mediaIdController.text);
             _mediaIdController.clear();
-            _showSnackBar('Media deleted');
+            await _onLoading(false);
+            _showSnackBar('Media deleted', Colors.green);
           }),
           icon: const Icon(Icons.delete),
           label: const Text('Delete Media'),
@@ -321,12 +392,14 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
       children: [
         ElevatedButton.icon(
           onPressed: () => _execute(() async {
-            await whatsapp.sendLocation(
+            await _onLoading(true);
+            await widget.whatsapp.sendLocation(
               phoneNumber: _phoneController.text,
               latitude: 37.7749,
               longitude: -122.4194,
             );
-            _showSnackBar('Location sent');
+            await _onLoading(false);
+            _showSnackBar('Location sent', Colors.green);
           }),
           icon: const Icon(Icons.location_on),
           label: const Text('Send Location'),

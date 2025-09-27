@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whatsapp/whatsapp.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -55,6 +55,7 @@ void main() async {
       }
       print('Response: ${uploadAudio.getFullResponse()}');
       expect(uploadAudio.isSuccess(), true);
+
       expect(uploadAudio.getMediaId(), isNotNull);
     });
 
