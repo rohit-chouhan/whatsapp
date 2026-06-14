@@ -176,6 +176,8 @@ class _WhatsAppTestPageState extends State<WhatsAppTestPage> {
   Future<void> _execute(Function() action) async {
     try {
       await action();
+    } on WhatsAppException catch (e) {
+      _showError('WhatsApp API Error: ${e.message}');
     } catch (e) {
       _showError(e.toString());
     }

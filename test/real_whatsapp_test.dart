@@ -18,7 +18,7 @@ void main() async {
   final String phoneNumber = dotenv.env['RECEIPT_NUMBER']!;
   final String accessToken = dotenv.env['ACCESS_TOKEN']!;
   final String phoneNumberId = dotenv.env['PHONE_NUMBER_ID']!;
-  final String waMessageId = dotenv.env['WA_MESSAGE_ID']!;
+  final String waMessageId = dotenv.env['INCOMING_WA_MESSAGE_ID']!;
 
   // Removed duplicate waMessageId declaration
 

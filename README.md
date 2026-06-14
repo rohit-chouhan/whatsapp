@@ -31,7 +31,7 @@ Other useful links:
 
 ---
 
-## New Features in v4.0.0
+## New Features in v4
 
 - **Performance Improvements** – Optimized core methods, now up to 3x faster than previous versions.
 - **Web Platform Support** – Now supports fully compatibility with Flutter Web for most features.
@@ -57,13 +57,13 @@ const fromNumberId = 'YOUR_PHONE_NUMBER_ID';
 // Create WhatsApp client instance
 final whatsapp = WhatsApp(accessToken, fromNumberId);
 
-// Send a simple text message
-var message = await whatsapp.sendMessage(
-  phoneNumber: 'RECEIPT_NUMBER', // Recipient's phone number in international format
-  text: 'Hi, how are you?',      // Message content
-);
+try {
+  // Send a simple text message
+  var message = await whatsapp.sendMessage(
+    phoneNumber: 'RECEIPT_NUMBER', // Recipient's phone number in international format
+    text: 'Hi, how are you?',      // Message content
+  );
 
-if (message.isSuccess()) {
   // Message sent successfully
   // Get and print the unique ID of the sent message
   print('Message ID: ${message.getMessageId()}');
@@ -71,14 +71,16 @@ if (message.isSuccess()) {
   print('Message sent to: ${message.getContactId()}');
   // Get and print the full API response body
   print('API Response: ${message.getFullResponse()}');
-} else {
+} on WhatsAppException catch (e) {
   // Message failed to send
   // Print HTTP error code returned by the API
-  print('HTTP Code: ${message.getErrorCode()}');
+  print('HTTP Code: ${e.statusCode}');
   // Print exact error details from WhatsApp Cloud API
-  print('API Error: ${message.getErrorMessage()}');
+  print('API Error: ${e.message}');
   // Print type of request error (e.g., validation, authorization, etc.)
-  print('Request Error: ${message.getErrorType()}');
+  print('Request Error: ${e.errorType}');
+} catch (e) {
+  print('Unexpected error: $e');
 }
 ```
 

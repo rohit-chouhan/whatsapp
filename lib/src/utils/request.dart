@@ -17,7 +17,7 @@ class Request {
   String? mediaMimeType;
   String? mediaSha256;
   String? mediaFileSize;
-  String url = 'https://graph.facebook.com/v23.0/';
+  String url = 'https://graph.facebook.com/v25.0/';
 
   // Clear previous state before making new requests
   void _clearState() {
@@ -219,7 +219,7 @@ class Request {
 
     try {
       final uri =
-          Uri.parse('https://graph.facebook.com/v23.0/$phoneNumberId/media');
+          Uri.parse('https://graph.facebook.com/v25.0/$phoneNumberId/media');
       final request = http.MultipartRequest('POST', uri);
 
       request.headers.addAll({"Authorization": "Bearer $accessToken"});
@@ -271,7 +271,7 @@ class Request {
     final String filename = _getFilenameFromUrl(fileUrl, fileType);
 
     final uri =
-        Uri.parse('https://graph.facebook.com/v23.0/$phoneNumberId/media');
+        Uri.parse('https://graph.facebook.com/v25.0/$phoneNumberId/media');
     final request = http.MultipartRequest('POST', uri);
 
     request.headers.addAll({"Authorization": "Bearer $accessToken"});
@@ -428,7 +428,7 @@ class Request {
   }
 
   /// Method to set custom version of the Facebook Graph API.
-  /// [version] The version of the Facebook Graph API to use ex. v19.0
+  /// [version] The version of the Facebook Graph API to use ex. v25.0
   void setVersion(String version) {
     url = 'https://graph.facebook.com/$version/';
   }

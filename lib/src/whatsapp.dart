@@ -42,13 +42,15 @@ class WhatsApp {
   /// [accessToken] is the Cloud API bearer token.
   /// [fromNumberId] is the sender phone number ID path prefix used in API URLs.
   /// [request] optional Request instance for dependency injection (used for testing).
-  WhatsApp(this._accessToken, this._fromNumberId, [Request? request]) {
+  WhatsApp(String accessToken, String fromNumberId, [Request? request])
+      : _accessToken = accessToken.trim(),
+        _fromNumberId = fromNumberId.trim() {
     _request = request ?? Request();
   }
 
-  /// Set a custom Facebook Graph API version (e.g. "v19.0").
+  /// Set a custom Facebook Graph API version (e.g. "v25.0").
   ///
-  /// [version] Graph API version string like "v19.0".
+  /// [version] Graph API version string like "v25.0".
   void setVersion(String version) {
     _request.setVersion(version);
   }

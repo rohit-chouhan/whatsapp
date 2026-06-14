@@ -1,141 +1,46 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:whatsapp/src/utils/exception.dart';
-import 'package:whatsapp/src/utils/request.dart';
+import 'package:whatsapp/src/services/base_service.dart';
 import 'package:whatsapp/src/utils/response/whatsapp_media_delete_response.dart';
 import 'package:whatsapp/src/utils/response/whatsapp_media_get_response.dart';
 import 'package:whatsapp/src/utils/response/whatsapp_media_upload_response.dart';
 
-class MediaService {
-  final String accessToken;
-  final String fromNumberId;
-  final Request request;
-
-  MediaService(this.accessToken, this.fromNumberId, this.request);
+class MediaService extends BaseService {
+  MediaService(super.accessToken, super.fromNumberId, super.request);
 
   Future<WhatsAppMediaUploadResponse> uploadMediaFile(
       dynamic file, String fileType) async {
-    try {
-      final http.Response response = await request.uploadMediaFile(
+    return executeApiCall(
+      () => request.uploadMediaFile(
           accessToken: accessToken,
           phoneNumberId: fromNumberId,
           file: file,
-          fileType: fileType);
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        final WhatsAppMediaUploadResponse parsedResponse =
-            WhatsAppMediaUploadResponse.fromJson(responseBody);
-        return parsedResponse;
-      } else {
-        // Throw a more specific exception using the factory constructor
-        throw WhatsAppException.fromResponse(response);
-      }
-    } on FormatException catch (e) {
-      // Handle JSON decoding errors specifically
-      throw JsonFormatException('Failed to parse JSON response: $e');
-    } on http.ClientException catch (e) {
-      // Handle network-related errors (e.g., no internet, timeout)
-      throw NetworkException('Network error: $e');
-    } on WhatsAppException {
-      // Re-throw WhatsApp-specific exceptions.
-      rethrow;
-    } catch (e) {
-      // Handle any other unexpected exceptions.
-      throw WhatsAppException('An unexpected error occurred: $e');
-    }
+          fileType: fileType),
+      (json) => WhatsAppMediaUploadResponse.fromJson(json),
+    );
   }
 
   Future<WhatsAppMediaUploadResponse> uploadMediaFileByUrl(
       String fileUrl, String? fileType) async {
-    try {
-      final http.Response response =
-          await request.uploadMediaFileByUrlWithResponse(
-              accessToken: accessToken,
-              phoneNumberId: fromNumberId,
-              fileUrl: fileUrl,
-              fileType: fileType!);
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        final WhatsAppMediaUploadResponse parsedResponse =
-            WhatsAppMediaUploadResponse.fromJson(responseBody);
-        return parsedResponse;
-      } else {
-        // Throw a more specific exception using the factory constructor
-        throw WhatsAppException.fromResponse(response);
-      }
-    } on FormatException catch (e) {
-      // Handle JSON decoding errors specifically
-      throw JsonFormatException('Failed to parse JSON response: $e');
-    } on http.ClientException catch (e) {
-      // Handle network-related errors (e.g., no internet, timeout)
-      throw NetworkException('Network error: $e');
-    } on WhatsAppException {
-      // Re-throw WhatsApp-specific exceptions.
-      rethrow;
-    } catch (e) {
-      // Handle any other unexpected exceptions.
-      throw WhatsAppException('An unexpected error occurred: $e');
-    }
+    return executeApiCall(
+      () => request.uploadMediaFileByUrlWithResponse(
+          accessToken: accessToken,
+          phoneNumberId: fromNumberId,
+          fileUrl: fileUrl,
+          fileType: fileType!),
+      (json) => WhatsAppMediaUploadResponse.fromJson(json),
+    );
   }
 
   Future<WhatsAppMediaGetResponse> getMedia(String mediaId) async {
-    try {
-      final http.Response response =
-          await request.getMediaWithResponse(accessToken, mediaId);
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        final WhatsAppMediaGetResponse parsedResponse =
-            WhatsAppMediaGetResponse.fromJson(responseBody);
-        return parsedResponse;
-      } else {
-        // Throw a more specific exception using the factory constructor
-        throw WhatsAppException.fromResponse(response);
-      }
-    } on FormatException catch (e) {
-      // Handle JSON decoding errors specifically
-      throw JsonFormatException('Failed to parse JSON response: $e');
-    } on http.ClientException catch (e) {
-      // Handle network-related errors (e.g., no internet, timeout)
-      throw NetworkException('Network error: $e');
-    } on WhatsAppException {
-      // Re-throw WhatsApp-specific exceptions.
-      rethrow;
-    } catch (e) {
-      // Handle any other unexpected exceptions.
-      throw WhatsAppException('An unexpected error occurred: $e');
-    }
+    return executeApiCall(
+      () => request.getMediaWithResponse(accessToken, mediaId),
+      (json) => WhatsAppMediaGetResponse.fromJson(json),
+    );
   }
 
   Future<WhatsAppMediaDeleteResponse> deleteMedia(String mediaId) async {
-    try {
-      final http.Response response =
-          await request.deleteMediaWithResponse(accessToken, mediaId);
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        final WhatsAppMediaDeleteResponse parsedResponse =
-            WhatsAppMediaDeleteResponse.fromJson(responseBody);
-        return parsedResponse;
-      } else {
-        // Throw a more specific exception using the factory constructor
-        throw WhatsAppException.fromResponse(response);
-      }
-    } on FormatException catch (e) {
-      // Handle JSON decoding errors specifically
-      throw JsonFormatException('Failed to parse JSON response: $e');
-    } on http.ClientException catch (e) {
-      // Handle network-related errors (e.g., no internet, timeout)
-      throw NetworkException('Network error: $e');
-    } on WhatsAppException {
-      // Re-throw WhatsApp-specific exceptions.
-      rethrow;
-    } catch (e) {
-      // Handle any other unexpected exceptions.
-      throw WhatsAppException('An unexpected error occurred: $e');
-    }
+    return executeApiCall(
+      () => request.deleteMediaWithResponse(accessToken, mediaId),
+      (json) => WhatsAppMediaDeleteResponse.fromJson(json),
+    );
   }
 }

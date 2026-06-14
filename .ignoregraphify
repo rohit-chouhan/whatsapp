@@ -1,0 +1,7 @@
+/.agents
+/.vscode
+/img
+/sample_files
+analysis_options.yaml
+.metadata
+/example

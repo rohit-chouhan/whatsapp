@@ -1,3 +1,11 @@
+## 4.0.1
+
+- Upgraded API version to `v25.0`
+- Massively refactored 15 service classes to extend `BaseService`, reducing duplicated exception handling and improving module cohesion.
+- Fixed `updateBusinessProfile` missing `address` field mapping.
+- Fixed `Failed to parse header value` by trimming trailing whitespaces in tokens.
+- Fixed outdated code in package example and `README.md`.
+
 ## 4.0.0
 
 - **BREAKING CHANGES**:  
