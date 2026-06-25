@@ -520,6 +520,7 @@ class WhatsApp {
   /// [template] The template ID of the template message
   /// [language] The language code for the template message
   /// [placeholder] The placeholder values for the template message (optional)
+  /// [headerParameters] The header component parameters for the template message (optional)
   ///
   /// Returns a [WhatsAppResponse] containing the contact ID, message ID, and full response if the template was sent successfully.
   Future<WhatsAppResponse> sendTemplate(
