@@ -24,7 +24,6 @@ dev_dependencies:
 
 flutter:
   assets:
-    - .env
     - img/logo.webp
 
 screenshots:
