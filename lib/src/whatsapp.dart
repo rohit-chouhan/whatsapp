@@ -526,9 +526,10 @@ class WhatsApp {
       {required String phoneNumber,
       required String template,
       required String language,
-      List<Map<String, dynamic>>? placeholder}) async {
+      List<Map<String, dynamic>>? placeholder,
+      List<Map<String, dynamic>>? headerParameters}) async {
     return await _getTemplateService.sendTemplate(
-        phoneNumber, template, language, placeholder);
+        phoneNumber, template, language, placeholder, headerParameters);
   }
 
   /// Set Two Step Verification for phone number registration
